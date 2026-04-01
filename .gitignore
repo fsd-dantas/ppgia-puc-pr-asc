@@ -1,0 +1,11 @@
+# dados binários gerados nos experimentos
+atividades/**/dados/**/*.bin
+atividades/**/dados/**/*.img
+
+# saídas temporárias
+*.tmp
+*.swp
+
+# macOS / Windows
+.DS_Store
+Thumbs.db
