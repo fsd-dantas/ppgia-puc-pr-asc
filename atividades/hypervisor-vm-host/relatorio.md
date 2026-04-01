@@ -13,23 +13,31 @@
 
 | Atributo | Valor |
 |---|---|
-| Sistema Operacional | <!-- ex.: Windows 11 Home 23H2 --> |
-| Processador | <!-- ex.: Intel Core i7-12700H --> |
-| Memória RAM | <!-- ex.: 32 GB DDR5 --> |
-| Armazenamento | <!-- ex.: SSD NVMe 1 TB --> |
-| Núcleos disponíveis | <!-- ex.: 14 (6P + 8E) --> |
-| Software de virtualização | <!-- ex.: VirtualBox 7.0 / VMware Workstation 17 / KVM --> |
+| Sistema Operacional | Ubuntu 24.04.4 LTS (kernel 6.8.0-106-generic) |
+| Processador | Intel Core i7-3770 @ 3.40 GHz |
+| Memória RAM | 16 GB |
+| Armazenamento | 3× HDD SATA 465.8 GB (`sda`, `sdb`, `sdc`) |
+| Núcleos disponíveis | 4 cores / 8 threads (HT habilitado) |
+| Suporte a virtualização | VT-x confirmado (`grep -c vmx /proc/cpuinfo` → 16) |
+| Software de virtualização | KVM/QEMU com libvirt |
+| Hardware | Dell OptiPlex 9010 (Desktop) |
+
+**Notas sobre o armazenamento:**
+- `sda`: disco do sistema operacional host (LVM — `ubuntu-vg`, 100 GB alocados, 86 GB livres no FS)
+- `sdb`: disco dedicado ao disco virtual da VM (`/dev/sdb2`, raw block device, sem filesystem)
+- `sdc`: disco adicional com partição ext4 não montada
 
 ### 1.2 Máquina Virtual (Guest)
 
 | Atributo | Valor |
 |---|---|
-| Sistema Operacional convidado | <!-- ex.: Ubuntu 24.04 LTS --> |
-| vCPUs atribuídas | <!-- ex.: 4 --> |
-| Memória RAM atribuída | <!-- ex.: 8 GB --> |
-| Tamanho do disco virtual | <!-- ex.: 50 GB --> |
-| Tipo de disco virtual | <!-- ex.: VDI / VMDK / qcow2; alocação dinâmica --> |
-| Outras configurações | <!-- ex.: VT-x habilitado, PAE/NX ativo --> |
+| Sistema Operacional convidado | Ubuntu 24.04.2 LTS Server |
+| vCPUs atribuídas | 4 |
+| Memória RAM atribuída | 4 GB |
+| Disco virtual | `/dev/sdb2` (raw block device, 465.8 GB) |
+| Tipo de disco virtual | Raw device passado diretamente via virtio |
+| Driver de rede | virtio |
+| Outras configurações | VT-x habilitado no host; aceleração KVM ativa |
 
 ---
 
