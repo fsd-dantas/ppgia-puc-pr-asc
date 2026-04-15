@@ -7,3 +7,4 @@ Repositório da disciplina **Arquitetura de Sistemas Computacionais** — Mestra
 | # | Título | Status |
 |---|---|---|
 | — | [Análise do Hipervisor e Impacto da VM sobre o Host](atividades/hypervisor-vm-host/) | Em andamento |
+| — | [Produto Consumidor](atividades/produto-consumidor/) | Em andamento |

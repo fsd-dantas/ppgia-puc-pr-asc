@@ -1,0 +1,21 @@
+[tools]
+java = "21.0.2"
+
+[tasks."produto-consumidor:compile"]
+description = "Compila a atividade Produto Consumidor"
+dir = "atividades/produto-consumidor"
+run = [
+  "mkdir -p build",
+  "javac -encoding UTF-8 -d build src/main/java/br/pucpr/asc/produtoconsumidor/Main.java",
+]
+run_windows = [
+  "if not exist build mkdir build",
+  "javac -encoding UTF-8 -d build src\\main\\java\\br\\pucpr\\asc\\produtoconsumidor\\Main.java",
+]
+
+[tasks."produto-consumidor:run"]
+description = "Executa a atividade Produto Consumidor. Uso: mise run produto-consumidor:run -- <X> <Y> [duracao]"
+depends = ["produto-consumidor:compile"]
+dir = "atividades/produto-consumidor"
+run = "java -cp build br.pucpr.asc.produtoconsumidor.Main"
+run_windows = "java -cp build br.pucpr.asc.produtoconsumidor.Main"

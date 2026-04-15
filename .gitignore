@@ -2,6 +2,10 @@
 atividades/**/dados/**/*.bin
 atividades/**/dados/**/*.img
 
+# artefatos Java
+atividades/**/build/
+*.class
+
 # saídas temporárias
 *.tmp
 *.swp
