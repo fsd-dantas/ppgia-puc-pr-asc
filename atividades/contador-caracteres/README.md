@@ -1,4 +1,4 @@
-# Contador de Caracteres
+# Leitura Arquivo Multithread
 
 Documento de apoio interno para entender e reproduzir a atividade.
 
