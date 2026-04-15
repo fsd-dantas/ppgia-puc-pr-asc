@@ -6,6 +6,9 @@ atividades/**/dados/**/*.img
 atividades/**/build/
 *.class
 
+# bases locais de atividades
+atividades/contador-caracteres/dados/
+
 # saídas temporárias
 *.tmp
 *.swp

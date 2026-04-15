@@ -1,5 +1,6 @@
 [tools]
 java = "21.0.2"
+python = "3.13"
 
 [tasks."produto-consumidor:compile"]
 description = "Compila a atividade Produto Consumidor"
@@ -19,3 +20,66 @@ depends = ["produto-consumidor:compile"]
 dir = "atividades/produto-consumidor"
 run = "java -cp build br.pucpr.asc.produtoconsumidor.Main"
 run_windows = "java -cp build br.pucpr.asc.produtoconsumidor.Main"
+
+# ── rtos-determinismo ─────────────────────────────────────────────────────────
+
+[tasks."rtos-determinismo:setup"]
+description = "Instala dependências Python para análise (numpy, matplotlib, pandas)"
+run = "pip install numpy matplotlib pandas"
+
+[tasks."rtos-determinismo:linux:compile"]
+description = "Compila jitter.c e priority_inversion.c (requer Linux/WSL com gcc)"
+dir = "atividades/rtos-determinismo/src/linux"
+run = [
+  "gcc -O2 -Wall -o jitter              jitter.c             -lm -lpthread",
+  "gcc -O2 -Wall -o priority_inversion  priority_inversion.c -lm -lpthread",
+]
+
+[tasks."rtos-determinismo:linux:jitter"]
+description = "Executa coleta de jitter do T1 (requer root/CAP_SYS_NICE no Linux)"
+depends = ["rtos-determinismo:linux:compile"]
+dir = "atividades/rtos-determinismo/src/linux"
+run = "sudo ./jitter"
+
+[tasks."rtos-determinismo:linux:inversion"]
+description = "Executa demonstração de inversão de prioridade (requer root no Linux)"
+depends = ["rtos-determinismo:linux:compile"]
+dir = "atividades/rtos-determinismo/src/linux"
+run = "sudo ./priority_inversion"
+
+[tasks."rtos-determinismo:plot:jitter"]
+description = "Gera histograma de jitter (dados/histograma_jitter.png)"
+dir = "atividades/rtos-determinismo"
+run = "python scripts/plot_jitter.py"
+
+[tasks."rtos-determinismo:plot:inversion"]
+description = "Gera timeline de inversão de prioridade (dados/timeline_inversao.png)"
+dir = "atividades/rtos-determinismo"
+run = "python scripts/plot_inversion.py"
+
+[tasks."rtos-determinismo:plot:all"]
+description = "Gera todos os gráficos da atividade"
+depends = ["rtos-determinismo:plot:jitter", "rtos-determinismo:plot:inversion"]
+
+[tasks."rtos-determinismo:rtos:build"]
+description = "Compila Zephyr para qemu_x86 (requer west + Zephyr SDK)"
+dir = "atividades/rtos-determinismo/src/rtos"
+run = "west build -p auto -b qemu_x86 ."
+
+[tasks."rtos-determinismo:rtos:run"]
+description = "Executa no QEMU e captura saída bruta em dados/rtos/raw_output.txt"
+depends = ["rtos-determinismo:rtos:build"]
+dir = "atividades/rtos-determinismo/src/rtos"
+run = [
+  "mkdir -p ../../../../dados/rtos",
+  "west build -t run 2>/dev/null | tee ../../../../dados/rtos/raw_output.txt",
+]
+
+[tasks."rtos-determinismo:rtos:extract"]
+description = "Extrai CSVs de jitter e inversão do raw_output.txt"
+dir = "atividades/rtos-determinismo"
+run = [
+  "grep '^JITTER,' dados/rtos/raw_output.txt > dados/rtos/jitter.csv",
+  "grep '^INV,'    dados/rtos/raw_output.txt > dados/rtos/priority_inversion.csv",
+  "echo 'CSVs extraídos em dados/rtos/'",
+]

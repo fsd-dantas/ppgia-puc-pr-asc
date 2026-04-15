@@ -36,3 +36,5 @@ ppgia-puc-pr-asc/
 | Tópico | Pasta | Status |
 |---|---|---|
 | Análise de Hipervisor e Impacto da VM sobre o Host | `atividades/hypervisor-vm-host/` | Em andamento |
+| Produto-Consumidor (pthreads Java) | `atividades/produto-consumidor/` | Em andamento |
+| RTOS: Determinismo e Inversão de Prioridade (GPOS vs. RTOS) | `atividades/rtos-determinismo/` | Em andamento |
