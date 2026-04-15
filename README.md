@@ -8,3 +8,5 @@ Repositório da disciplina **Arquitetura de Sistemas Computacionais** — Mestra
 |---|---|---|
 | — | [Análise do Hipervisor e Impacto da VM sobre o Host](atividades/hypervisor-vm-host/) | Em andamento |
 | — | [Produto Consumidor](atividades/produto-consumidor/) | Em andamento |
+| — | [Contador de Caracteres](atividades/contador-caracteres/) | Em andamento |
+| — | [RTOS: Determinismo e Inversão de Prioridade](atividades/rtos-determinismo/) | Em andamento |
