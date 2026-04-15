@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+message: "Se este repositório for utilizado em trabalhos acadêmicos, por favor cite conforme abaixo."
+type: software
+title: "Arquitetura de Sistemas Computacionais — Repositório de Experimentos"
+abstract: >
+  Artefatos experimentais da disciplina Arquitetura de Sistemas Computacionais
+  do programa de Mestrado PPGIA/PUC-PR. Inclui estudos reproduzíveis sobre
+  virtualização e hipervisores (KVM/QEMU), sincronização por monitores (Java),
+  paralelismo de dados (ExecutorService) e determinismo em RTOS (Zephyr),
+  com análise de inversão de prioridade e escalonamento Rate Monotonic.
+authors:
+  - family-names: Dantas
+    given-names: F. S.
+    email: fsd.dantas@gmail.com
+    affiliation: "PPGIA — Pontifícia Universidade Católica do Paraná"
+repository-code: "https://github.com/fsd-dantas/ppgia-puc-pr-asc"
+url: "https://github.com/fsd-dantas/ppgia-puc-pr-asc"
+license: MIT
+date-released: "2026-01-01"
+version: "1.0.0"
+keywords:
+  - computer-systems-architecture
+  - virtualization
+  - hypervisor
+  - real-time-systems
+  - rtos
+  - priority-inversion
+  - rate-monotonic-scheduling
+  - java-concurrency
+  - zephyr
+  - qemu
+references:
+  - type: software
+    title: "CISEI Lab PUC-PR"
+    authors:
+      - name: "PUC-PR CISEI Lab"
+    url: "https://github.com/PUC-PR-CISEI-LAB/cisei-lab"

@@ -1,0 +1,249 @@
+% referencias.bib — Bibliografia centralizada
+% Disciplina: Arquitetura de Sistemas Computacionais — PPGIA/PUC-PR
+%
+% Organização:
+%   1. Escalonamento e Tempo Real
+%   2. Virtualização e Hipervisores
+%   3. Concorrência e Modelos de Memória
+%   4. Paralelismo e Escalabilidade
+%   5. Sistemas Operacionais (referência geral)
+%   6. Documentação de Software
+
+% ══════════════════════════════════════════════════════════════
+% 1. ESCALONAMENTO E SISTEMAS DE TEMPO REAL
+% ══════════════════════════════════════════════════════════════
+
+@article{Liu1973,
+  author    = {Liu, C. L. and Layland, J. W.},
+  title     = {Scheduling Algorithms for Multiprogramming in a Hard-Real-Time Environment},
+  journal   = {Journal of the ACM},
+  volume    = {20},
+  number    = {1},
+  pages     = {46--61},
+  year      = {1973},
+  doi       = {10.1145/321738.321743},
+  note      = {Artigo fundacional do Rate Monotonic Scheduling (RMS);
+               prova o limite de utilização U_bound(n) = n(2^{1/n}-1)}
+}
+
+@article{Sha1990,
+  author    = {Sha, Lui and Rajkumar, Ragunathan and Lehoczky, John P.},
+  title     = {Priority Inheritance Protocols: An Approach to Real-Time Synchronization},
+  journal   = {IEEE Transactions on Computers},
+  volume    = {39},
+  number    = {9},
+  pages     = {1175--1185},
+  year      = {1990},
+  doi       = {10.1109/12.57058},
+  note      = {Define formalmente PIP e PCP; demonstra que PIP limita o
+               bloqueio de uma tarefa de alta prioridade a no máximo um
+               período de seção crítica de menor prioridade}
+}
+
+@book{Buttazzo2011,
+  author    = {Buttazzo, Giorgio C.},
+  title     = {Hard Real-Time Computing Systems: Predictable Scheduling
+               Algorithms and Applications},
+  edition   = {3},
+  publisher = {Springer},
+  address   = {New York},
+  year      = {2011},
+  isbn      = {978-1-4614-0676-1},
+  doi       = {10.1007/978-1-4614-0676-1}
+}
+
+@techreport{Jones1997,
+  author      = {Jones, Michael B.},
+  title       = {What Really Happened on Mars?},
+  institution = {Microsoft Research},
+  year        = {1997},
+  url         = {https://www.cs.unc.edu/~anderson/teach/comp790/papers/mars_pathfinder_long_version.html},
+  note        = {Análise do incidente de inversão de prioridade na sonda
+                 Mars Pathfinder (1997); motivação canônica para PIP em RTOS}
+}
+
+@article{Lehoczky1989,
+  author    = {Lehoczky, John P. and Sha, Lui and Ding, Ye},
+  title     = {The Rate Monotonic Scheduling Algorithm: Exact Characterization
+               and Average Case Behavior},
+  journal   = {Proceedings of the IEEE Real-Time Systems Symposium},
+  pages     = {166--171},
+  year      = {1989},
+  doi       = {10.1109/REAL.1989.63567},
+  note      = {Estende Liu \& Layland com análise de tempo de resposta (RTA)
+               para verificação exata de escalonabilidade}
+}
+
+% ══════════════════════════════════════════════════════════════
+% 2. VIRTUALIZAÇÃO E HIPERVISORES
+% ══════════════════════════════════════════════════════════════
+
+@article{PopekGoldberg1974,
+  author    = {Popek, Gerald J. and Goldberg, Robert P.},
+  title     = {Formal Requirements for Virtualizable Third Generation Architectures},
+  journal   = {Communications of the ACM},
+  volume    = {17},
+  number    = {7},
+  pages     = {412--421},
+  year      = {1974},
+  doi       = {10.1145/361011.361073},
+  note      = {Trabalho fundacional de virtualização; define as condições
+               necessárias e suficientes para virtualização de ISA}
+}
+
+@inproceedings{Barham2003,
+  author    = {Barham, Paul and Dragovic, Boris and Fraser, Keir and Hand, Steven
+               and Harris, Tim and Ho, Alex and Neugebauer, Rolf and Pratt, Ian
+               and Warfield, Andrew},
+  title     = {{Xen} and the Art of Virtualization},
+  booktitle = {Proceedings of the 19th ACM Symposium on Operating Systems
+               Principles (SOSP)},
+  pages     = {164--177},
+  year      = {2003},
+  doi       = {10.1145/945445.945462},
+  note      = {Introduz paravirtualização; referência de hipervisores Tipo 1}
+}
+
+@inproceedings{Kivity2007,
+  author    = {Kivity, Avi and Kamay, Yaniv and Laor, Dor and Lublin, Uri
+               and Liguori, Anthony},
+  title     = {{KVM}: The Linux Virtual Machine Monitor},
+  booktitle = {Proceedings of the Linux Symposium},
+  volume    = {1},
+  pages     = {225--230},
+  year      = {2007},
+  url       = {https://www.kernel.org/doc/ols/2007/ols2007v1-pages-225-230.pdf},
+  note      = {Artigo original do KVM; base para os experimentos de
+               virtualização com KVM/QEMU desta disciplina}
+}
+
+@inproceedings{Russell2008,
+  author    = {Russell, Rusty},
+  title     = {virtio: Towards a De-Facto Standard for Virtual {I/O} Devices},
+  booktitle = {ACM SIGOPS Operating Systems Review},
+  volume    = {42},
+  number    = {5},
+  pages     = {95--103},
+  year      = {2008},
+  doi       = {10.1145/1400097.1400108},
+  note      = {Especificação do protocolo virtio usado no experimento
+               de disco virtual (Trabalho 01)}
+}
+
+% ══════════════════════════════════════════════════════════════
+% 3. CONCORRÊNCIA E MODELOS DE MEMÓRIA
+% ══════════════════════════════════════════════════════════════
+
+@book{Goetz2006,
+  author    = {Goetz, Brian and Peierls, Tim and Bloch, Joshua and Bowbeer, Joseph
+               and Holmes, David and Lea, Doug},
+  title     = {Java Concurrency in Practice},
+  publisher = {Addison-Wesley},
+  address   = {Upper Saddle River, NJ},
+  year      = {2006},
+  isbn      = {978-0-321-34960-6},
+  note      = {Referência para os Trabalhos 02 e 03; cobre BlockingQueue,
+               ExecutorService e o Java Memory Model (JMM)}
+}
+
+@article{Manson2005,
+  author    = {Manson, Jeremy and Pugh, William and Adve, Sarita V.},
+  title     = {The Java Memory Model},
+  journal   = {ACM SIGPLAN Notices},
+  volume    = {40},
+  number    = {1},
+  pages     = {378--391},
+  year      = {2005},
+  doi       = {10.1145/1047659.1040336},
+  note      = {Especificação formal do JMM; garante visibilidade entre
+               threads no ArrayBlockingQueue (Trabalho 02)}
+}
+
+@article{Dijkstra1968,
+  author    = {Dijkstra, Edsger W.},
+  title     = {Cooperating Sequential Processes},
+  journal   = {Programming Languages},
+  editor    = {Genuys, F.},
+  publisher = {Academic Press},
+  pages     = {43--112},
+  year      = {1968},
+  note      = {Formulação original do problema produtor-consumidor e
+               semáforos; base teórica do Trabalho 02}
+}
+
+% ══════════════════════════════════════════════════════════════
+% 4. PARALELISMO E ESCALABILIDADE
+% ══════════════════════════════════════════════════════════════
+
+@inproceedings{Amdahl1967,
+  author    = {Amdahl, Gene M.},
+  title     = {Validity of the Single Processor Approach to Achieving
+               Large Scale Computing Capabilities},
+  booktitle = {Proceedings of the AFIPS Spring Joint Computer Conference},
+  pages     = {483--485},
+  year      = {1967},
+  doi       = {10.1145/1465482.1465560},
+  note      = {Lei de Amdahl; fornece o modelo teórico para análise de
+               speedup do Trabalho 03 (contador paralelo)}
+}
+
+@article{Gustafson1988,
+  author    = {Gustafson, John L.},
+  title     = {Reevaluating {Amdahl's} Law},
+  journal   = {Communications of the ACM},
+  volume    = {31},
+  number    = {5},
+  pages     = {532--533},
+  year      = {1988},
+  doi       = {10.1145/42411.42415},
+  note      = {Lei de Gustafson: complemento à Lei de Amdahl para
+               problemas de escala crescente (Trabalho 03)}
+}
+
+% ══════════════════════════════════════════════════════════════
+% 5. SISTEMAS OPERACIONAIS (REFERÊNCIA GERAL)
+% ══════════════════════════════════════════════════════════════
+
+@book{Silberschatz2018,
+  author    = {Silberschatz, Abraham and Galvin, Peter B. and Gagne, Greg},
+  title     = {Operating System Concepts},
+  edition   = {10},
+  publisher = {Wiley},
+  address   = {Hoboken, NJ},
+  year      = {2018},
+  isbn      = {978-1-119-32091-3},
+  note      = {Referência geral para escalonamento (CFS, SCHED_FIFO),
+               sincronização e virtualização}
+}
+
+@book{Tanenbaum2014,
+  author    = {Tanenbaum, Andrew S. and Bos, Herbert},
+  title     = {Modern Operating Systems},
+  edition   = {4},
+  publisher = {Pearson},
+  address   = {Boston, MA},
+  year      = {2014},
+  isbn      = {978-0-13-359162-0}
+}
+
+% ══════════════════════════════════════════════════════════════
+% 6. DOCUMENTAÇÃO DE SOFTWARE
+% ══════════════════════════════════════════════════════════════
+
+@manual{ZephyrDocs2024,
+  author    = {{Zephyr Project Contributors}},
+  title     = {Zephyr RTOS Documentation},
+  year      = {2024},
+  url       = {https://docs.zephyrproject.org},
+  note      = {Referência para k\_mutex (PIP nativo), k\_sem, k\_thread,
+               K\_TIMEOUT\_ABS\_TICKS e configuração de prioridades (Trabalho 04)}
+}
+
+@manual{LinuxManPthread2024,
+  author    = {{Linux man-pages project}},
+  title     = {pthreads(7) — POSIX Threads},
+  year      = {2024},
+  url       = {https://man7.org/linux/man-pages/man7/pthreads.7.html},
+  note      = {Referência para SCHED\_FIFO, PTHREAD\_PRIO\_INHERIT,
+               clock\_nanosleep(TIMER\_ABSTIME) e mlockall() (Trabalho 04)}
+}
