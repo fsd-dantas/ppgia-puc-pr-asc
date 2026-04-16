@@ -17,13 +17,13 @@ O objetivo é manter uma base aberta, didática e academicamente rastreável, co
 
 ## Trabalhos
 
-| # | Título | Tema central | Stack de programação | Status |
-|---|---|---|---|---|
-| 01 | [Análise do Hipervisor e Impacto da VM sobre o Host](atividades/hypervisor-vm-host/) | Virtualização, KVM, observabilidade de recursos | KVM/QEMU, libvirt, `pidstat`, `strace`, `iostat` | Em andamento |
-| 02 | [Problema Produtor-Consumidor](atividades/produto-consumidor/) | Concorrência, sincronização e fila bloqueante | Java 21, `ArrayBlockingQueue` | Em andamento |
-| 03 | [Leitura Arquivo Multithread](atividades/contador-caracteres/) | Paralelismo de dados e processamento de arquivos | Java 21, `ExecutorService`, `AtomicInteger` | Em andamento |
-| 04 | [RTOS: Determinismo e Inversão de Prioridade](atividades/rtos-determinismo/) | Escalonamento, jitter, prioridade e RTOS | C, pthreads, `SCHED_FIFO`, Zephyr, QEMU | Em andamento |
-| 05 | [Estudo sobre Protocolo de Roteamento RPL](atividades/protocolo-rpl/) | LLN, IoT, RPL, resiliência e roteamento | Revisão bibliográfica, LaTeX, Overleaf, IEEE Conference | Em andamento |
+| #   | Título                                                                                                        | Tema central                                     | Stack de programação                                    | Status       |
+| --- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------- | ------------ |
+| 01  | [Análise do Hypervisor e do Impacto da Máquina Virtual sobre o Host](atividades/hypervisor-vm-host/README.md) | Virtualização, KVM, observabilidade de recursos  | KVM/QEMU, libvirt, `pidstat`, `strace`, `iostat`        | Em andamento |
+| 02  | [Problema Produtor-Consumidor](atividades/produto-consumidor/README.md)                                       | Concorrência, sincronização e fila bloqueante    | Java 21, `ArrayBlockingQueue`                           | Em andamento |
+| 03  | [Leitura Arquivo Multithread](atividades/contador-caracteres/README.md)                                       | Paralelismo de dados e processamento de arquivos | Java 21, `ExecutorService`, `AtomicInteger`             | Em andamento |
+| 04  | [RTOS: Determinismo e Inversão de Prioridade](atividades/rtos-determinismo/README.md)                         | Escalonamento, jitter, prioridade e RTOS         | C, pthreads, `SCHED_FIFO`, Zephyr, QEMU                 | Em andamento |
+| 05  | [Estudo sobre Protocolo de Roteamento RPL](atividades/protocolo-rpl/README.md)                                | LLN, IoT, RPL, resiliência e roteamento          | Revisão bibliográfica, LaTeX, Overleaf, IEEE Conference | Em andamento |
 
 ---
 
@@ -57,7 +57,9 @@ Experimento baseado em ambiente KVM/QEMU com VM previamente configurada. O passo
 
 **Trabalho 02 - Produtor-Consumidor**
 
-Exemplo com `X=1s`, `Y=2s` e duração de 15 segundos:
+O passo a passo completo está em [Trabalho 02 - Problema Produtor-Consumidor](atividades/produto-consumidor/README.md), e a análise técnica está em [Problema Produtor-Consumidor com Fila Limitada](atividades/produto-consumidor/relatorio.md).
+
+Exemplo rápido com `X=1s`, `Y=2s` e duração de 15 segundos:
 
 ```bash
 cd atividades/produto-consumidor
@@ -103,14 +105,14 @@ python scripts/plot_jitter.py
 
 Este repositório contém apenas material público e reproduzível.
 
-| Tipo de conteúdo | Versionar aqui? | Observação |
-|---|---|---|
-| Código-fonte didático | Sim | Java, C, scripts e configurações necessárias |
-| READMEs, relatórios e referências | Sim | Desde que não exponham dados sensíveis |
-| Dados brutos grandes | Não | Manter em `dados/` local, ignorado pelo Git |
-| Resultados derivados pequenos | Depende | Versionar apenas se forem anônimos e reprodutíveis |
-| Topologias, ativos, credenciais ou dados operacionais | Não | Devem permanecer em repositórios privados apropriados |
-| Artefatos de build | Não | `build/`, `.class`, binários e temporários são ignorados |
+| Tipo de conteúdo                                      | Versionado | Observação                                               |
+| ----------------------------------------------------- | ---------- | -------------------------------------------------------- |
+| Código-fonte didático                                 | Sim        | Java, C, scripts e configurações necessárias             |
+| READMEs, relatórios e referências                     | Sim        | Desde que não exponham dados sensíveis                   |
+| Dados brutos grandes                                  | Não        | Manter em `dados/` local, ignorado pelo Git              |
+| Resultados derivados pequenos                         | Depende    | Versionar apenas se forem anônimos e reprodutíveis       |
+| Topologias, ativos, credenciais ou dados operacionais | Não        | Devem permanecer em repositórios privados apropriados    |
+| Artefatos de build                                    | Não        | `build/`, `.class`, binários e temporários são ignorados |
 
 ---
 

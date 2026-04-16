@@ -1,8 +1,9 @@
 # Contador de Caracteres Paralelo: Análise de Escalabilidade com a Lei de Amdahl
 
-**Disciplina:** Arquitetura de Sistemas Computacionais — PPGIA/PUC-PR  
-**Autor:** [NOME]  
-**Data:** [DATA]
+- **Disciplina:** Arquitetura de Sistemas Computacionais — PPGIA/PUC-PR
+- **Autor:** Fernando Dantas
+- **Data:** Abril de 2026
+- **Status:** Protocolo técnico preparado; resultados quantitativos pendentes de coleta experimental.
 
 ---
 
@@ -46,10 +47,10 @@ Esta abordagem elimina a necessidade de dividir o array de arquivos previamente,
 
 | Atributo | Valor |
 |---|---|
-| Processador | [COMPLETAR: ex. Intel Core i7-3770 @ 3.40 GHz] |
-| Núcleos físicos / lógicos | [COMPLETAR: ex. 4 / 8 (HT)] |
-| RAM | [COMPLETAR: ex. 16 GB] |
-| Armazenamento | [COMPLETAR: ex. HDD SATA] |
+| Processador | Pendente de registro no ambiente de execução |
+| Núcleos físicos / lógicos | Pendente de registro no ambiente de execução |
+| RAM | Pendente de registro no ambiente de execução |
+| Armazenamento | Pendente de registro no ambiente de execução |
 | JDK | 21.0.2 |
 
 ### 2.3 Conjuntos de dados
@@ -57,7 +58,7 @@ Esta abordagem elimina a necessidade de dividir o array de arquivos previamente,
 | Dataset | Arquivos | Tamanho estimado | Propósito |
 |---|---|---|---|
 | Amostra | 100 arquivos `.txt` | ~10 MB | Validação de correção |
-| Produção | 35.000 arquivos `.txt` | [COMPLETAR] | Análise de escalabilidade |
+| Produção | 35.000 arquivos `.txt` | Pendente de medição local | Análise de escalabilidade |
 
 ### 2.4 Configurações de threads testadas
 
@@ -74,14 +75,7 @@ Configurações: T ∈ {1, 2, 4, 6, 8, 12, 16, 24}
 
 ### 3.1 Validação de correção (dataset de amostra)
 
-> **[COMPLETAR]** Executar com dataset de 100 arquivos e registrar:
-> - Contagens por letra (A–Z)
-> - Tempo de execução com T=1 e T=4
-> - Confirmar que ambos produzem resultado idêntico
-
-```
-[SAÍDA DO PROGRAMA AQUI]
-```
+Esta etapa deve ser executada com o dataset de 100 arquivos. O objetivo é registrar as contagens por letra (A–Z), comparar os tempos com T=1 e T=4, e confirmar que as duas execuções produzem o mesmo resultado consolidado.
 
 ### 3.2 Análise de escalabilidade (dataset de produção)
 
@@ -89,16 +83,16 @@ Configurações: T ∈ {1, 2, 4, 6, 8, 12, 16, 24}
 
 | Threads (T) | Tempo (s) | Speedup S(T) = T₁/Tₜ | Eficiência E(T) = S(T)/T |
 |---|---|---|---|
-| 1  | [MEDIR] | 1,00 | 1,00 |
-| 2  | [MEDIR] | [CALC] | [CALC] |
-| 4  | [MEDIR] | [CALC] | [CALC] |
-| 6  | [MEDIR] | [CALC] | [CALC] |
-| 8  | [MEDIR] | [CALC] | [CALC] |
-| 12 | [MEDIR] | [CALC] | [CALC] |
-| 16 | [MEDIR] | [CALC] | [CALC] |
-| 24 | [MEDIR] | [CALC] | [CALC] |
+| 1  | Pendente | 1,00 | 1,00 |
+| 2  | Pendente | Pendente | Pendente |
+| 4  | Pendente | Pendente | Pendente |
+| 6  | Pendente | Pendente | Pendente |
+| 8  | Pendente | Pendente | Pendente |
+| 12 | Pendente | Pendente | Pendente |
+| 16 | Pendente | Pendente | Pendente |
+| 24 | Pendente | Pendente | Pendente |
 
-> **[COMPLETAR]** Identificar o ponto de inflexão onde o speedup começa a diminuir (diminishing returns). Anotar o número de threads com maior eficiência E(T) e o número de threads com maior speedup absoluto.
+Após a coleta, deve-se identificar o ponto de inflexão em que o speedup começa a apresentar retornos decrescentes, além do número de threads com maior eficiência E(T) e maior speedup absoluto.
 
 ### 3.3 Ajuste da Lei de Amdahl
 
@@ -106,7 +100,7 @@ Dado o speedup máximo observado S_max em T_max threads, estimar a fração seri
 
 $$p = \frac{\frac{1}{S_{max}} - \frac{1}{T_{max}}}{1 - \frac{1}{T_{max}}}$$
 
-> **[COMPLETAR]** Calcular p a partir dos dados medidos. Plotar a curva teórica S(T) = 1 / (p + (1-p)/T) sobre os pontos medidos.
+A fração serial `p` deve ser calculada após a medição de `S_max` e `T_max`. Em seguida, a curva teórica `S(T) = 1 / (p + (1-p)/T)` pode ser comparada com os pontos empíricos.
 
 ---
 
@@ -132,31 +126,27 @@ A Lei de Amdahl pressupõe tamanho de problema fixo. A Lei de Gustafson [[Gustaf
 
 $$S_{scaled}(T) = p + T \cdot (1-p)$$
 
-> **[COMPLETAR]** Se o dataset de produção (35.000 arquivos) pode ser considerado "escalado" em relação ao dataset de amostra (100 arquivos), discutir qual modelo é mais adequado para este experimento.
+Com os tempos medidos, deve-se discutir se o dataset de produção, com 35.000 arquivos, representa uma escala ampliada do dataset de amostra ou apenas uma carga fixa maior. Essa distinção define se a Lei de Amdahl ou a Lei de Gustafson descreve melhor o experimento.
 
 ### 4.3 Impacto do armazenamento
 
 Para carga I/O-bound em HDD (latência de seek ~8 ms), threads adicionais além da saturação de I/O introduzem contenção sem ganho. Em SSD NVMe (latência ~0,1 ms), o paralelismo de I/O é mais efetivo.
 
-> **[COMPLETAR]** Comentar o tipo de armazenamento utilizado e se o bottleneck observado é I/O ou CPU.
+A identificação do tipo de armazenamento será registrada junto com os resultados. Essa informação é essencial para interpretar se o gargalo observado decorre de I/O, CPU ou contenção entre threads.
 
 ### 4.4 Custo de normalização Unicode
 
 `java.text.Normalizer.normalize()` converte caracteres acentuados (á, é, ç, etc.) para forma NFD antes da contagem. Para grandes volumes de texto com alta densidade de acentos, este passo pode dominar o tempo de CPU.
 
-> **[COMPLETAR]** Estimar a proporção de caracteres acentuados no corpus e discutir se remover a normalização alteraria o ponto ótimo de threads.
+Após a coleta, a proporção de caracteres acentuados no corpus pode ser estimada a partir das leituras processadas. Essa proporção ajuda a avaliar se a normalização Unicode altera o ponto ótimo de threads.
 
 ---
 
 ## 5. Conclusão
 
-> **[COMPLETAR]** Síntese de 2–3 parágrafos. Estrutura sugerida:
->
-> **Parágrafo 1 (Lei de Amdahl):** "Os resultados confirmaram o modelo de Amdahl com fração serial estimada em p ≈ X. O speedup máximo observado foi S = Y em T = Z threads, próximo ao limite teórico S_max = 1/p = W. Adicionar threads além de Z não produz ganho mensurável..."
->
-> **Parágrafo 2 (bottleneck):** "A análise indica que a carga é predominantemente [I/O-bound / CPU-bound] para o hardware utilizado. O ponto de saturação em T = Z threads corresponde ao número de [núcleos lógicos / canais de I/O]..."
->
-> **Parágrafo 3 (implicações de design):** "Para escalabilidade além dos limites de Amdahl, a alternativa seria adotar um modelo de redução paralela com acumuladores locais por thread (eliminando a contention no AtomicInteger) ou migrar para um pipeline de processamento assíncrono com `CompletableFuture`..."
+A conclusão final depende da execução dos datasets de amostra e produção. O relatório deve consolidar a fração serial estimada pela Lei de Amdahl, o speedup máximo observado, o ponto ótimo de threads e a natureza dominante do gargalo no hardware utilizado.
+
+Do ponto de vista de projeto, espera-se que a atividade evidencie o limite prático da paralelização em cargas mistas de I/O e CPU. Caso o ganho deixe de crescer após determinado número de threads, a análise deve justificar se a causa provável é saturação do armazenamento, contenção no índice compartilhado ou overhead de escalonamento.
 
 ---
 

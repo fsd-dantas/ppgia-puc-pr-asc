@@ -1,3 +1,9 @@
+/*
+ * Trabalho 02 - Problema Produtor-Consumidor
+ * Autor: Fernando Dantas
+ * Referencia Repositorio Git:
+ * https://github.com/fsd-dantas/ppgia-puc-pr-asc/tree/master/atividades/produto-consumidor
+ */
 package br.pucpr.asc.produtoconsumidor;
 
 import java.time.Duration;

@@ -79,12 +79,12 @@ pidstat -p <PID> 1
 
 ## 4. Pendências
 
-- [ ] Concluir instalação da VM após download da ISO
-- [ ] Anotar PID do processo qemu-system-x86_64 no host
-- [ ] Instalar sysstat, iotop, strace no guest
-- [ ] Executar Experimento 1 (CPU)
-- [ ] Executar Experimento 2 (escrita disco) — obrigatório
-- [ ] Executar Experimento 3 (leitura disco)
-- [ ] Executar Experimento 4 (syscalls)
-- [ ] Preencher tabela consolidada no relatorio.md
-- [ ] Redigir análise e conclusão
+- [x] Concluir instalação da VM após download da ISO — `guest-ubuntu2404` running (ID 2)
+- [x] Instalar sysstat, iotop, strace no guest — confirmado em 2026-04-15
+- [x] Anotar PID do processo qemu-system-x86_64 no host — PID 2365 (sessão 2026-04-16)
+- [x] Executar Experimento 1 (CPU) — concluído em 2026-04-16
+- [x] Executar Experimento 2 (escrita disco) — concluído em 2026-04-16
+- [x] Executar Experimento 3 (leitura disco) — concluído em 2026-04-16
+- [x] Executar Experimento 4 (syscalls) — concluído em 2026-04-16
+- [x] Preencher tabela consolidada no relatorio.md — concluído em 2026-04-16
+- [x] Redigir análise e conclusão — concluído em 2026-04-16

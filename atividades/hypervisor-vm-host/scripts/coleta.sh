@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 # coleta.sh — script auxiliar para coleta de dados dos experimentos
+#
+# Repositório: https://github.com/fsd-dantas/ppgia-puc-pr-asc
+# Atividade:   hypervisor-vm-host
+# Disciplina:  Arquitetura de Sistemas Computacionais — PPGIA/PUC-PR
+#
 # Executar no GUEST durante cada experimento.
 # Uso: ./coleta.sh <nome-experimento>
 # Exemplo: ./coleta.sh exp1-cpu
