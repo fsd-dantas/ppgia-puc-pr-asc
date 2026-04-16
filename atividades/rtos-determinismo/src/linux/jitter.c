@@ -20,6 +20,7 @@
 #define _GNU_SOURCE
 
 #include <errno.h>
+#include <inttypes.h>
 #include <math.h>
 #include <pthread.h>
 #include <sched.h>
