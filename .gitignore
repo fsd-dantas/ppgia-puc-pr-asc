@@ -16,3 +16,6 @@ atividades/contador-caracteres/dados/
 # macOS / Windows
 .DS_Store
 Thumbs.db
+
+# agente local
+CLAUDE.md
