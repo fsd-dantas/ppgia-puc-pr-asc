@@ -1,0 +1,32 @@
+Diretorio: D:\yggdrasil\nidavellir\pucpr\ppgia-puc-pr-asc\atividades\contador-caracteres\dados\amostra
+Arquivos .txt processados: 100
+Threads utilizadas: 4
+
+A: 21246
+B: 2130
+C: 6504
+D: 9155
+E: 19566
+F: 1923
+G: 2361
+H: 1313
+I: 12749
+J: 623
+K: 65
+L: 5343
+M: 6893
+N: 8709
+O: 18235
+P: 5602
+Q: 1470
+R: 12231
+S: 12599
+T: 8331
+U: 6363
+V: 2108
+W: 78
+X: 472
+Y: 62
+Z: 626
+
+Tempo de processamento: 0.050 s (49 ms)

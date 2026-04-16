@@ -28,11 +28,11 @@ public class ContadorCaracteres {
     private static final int TAMANHO_BUFFER = 16 * 1024;
 
     /*
-     * Configuracao escolhida para a maquina de desenvolvimento, que reporta
-     * 12 processadores logicos. O valor pode ser sobrescrito pelo segundo
-     * argumento da linha de comando.
+     * Configuracao escolhida apos analise empirica na maquina de
+     * desenvolvimento. O valor pode ser sobrescrito pelo segundo argumento da
+     * linha de comando.
      */
-    private static final int MELHOR_CONFIGURACAO_THREADS = 12;
+    private static final int MELHOR_CONFIGURACAO_THREADS = 16;
 
     private static final int[] THREADS_PARA_ANALISE = {1, 2, 4, 6, 8, 12, 16, 24};
 

@@ -21,9 +21,10 @@ O programa deve ser testado primeiro com a amostra de 100 arquivos e depois com 
 | `ContadorCaracteres.java` | Codigo fonte que deve ser entregue |
 | `dados/amostra/` | Pasta local para extrair `amostra.zip` |
 | `dados/todosArquivos/` | Pasta local para extrair `todosArquivos.zip` |
+| `resultados/` | Saidas de execucao usadas no relatorio |
 | `build/` | Saida local de compilacao, ignorada pelo Git |
 
-As pastas `dados/` e `build/` nao fazem parte da entrega.
+As pastas `dados/`, `resultados/` e `build/` nao fazem parte da entrega.
 
 ## Dependencias
 
@@ -91,6 +92,8 @@ Tambem e possivel informar manualmente a quantidade de threads:
 java -cp build ContadorCaracteres dados/todosArquivos 12
 ```
 
+Nesta maquina, a melhor configuracao medida foi `16` threads. Sem informar o segundo argumento, o programa usa essa configuracao padrao.
+
 ## Analise de threads
 
 Para comparar diferentes quantidades de threads:
@@ -104,10 +107,10 @@ O programa imprime o tempo de cada configuracao e indica a melhor configuracao n
 Depois da analise com os arquivos reais, ajuste a constante abaixo no codigo, se necessario:
 
 ```java
-private static final int MELHOR_CONFIGURACAO_THREADS = 12;
+private static final int MELHOR_CONFIGURACAO_THREADS = 16;
 ```
 
-Nesta maquina, o valor inicial escolhido foi `12`, porque o ambiente reporta 12 processadores logicos.
+Nesta maquina, o valor final escolhido foi `16`, com base na media das repeticoes aquecidas registradas em [`resultados/`](resultados/).
 
 ## Criterios da contagem
 

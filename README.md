@@ -17,13 +17,13 @@ O objetivo é manter uma base aberta, didática e academicamente rastreável, co
 
 ## Trabalhos
 
-| #   | Título                                                                                                        | Tema central                                     | Stack de programação                                    | Status       |
-| --- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------- | ------------ |
-| 01  | [Análise do Hypervisor e do Impacto da Máquina Virtual sobre o Host](atividades/hypervisor-vm-host/README.md) | Virtualização, KVM, observabilidade de recursos  | KVM/QEMU, libvirt, `pidstat`, `strace`, `iostat`        | Em andamento |
-| 02  | [Problema Produtor-Consumidor](atividades/produto-consumidor/README.md)                                       | Concorrência, sincronização e fila bloqueante    | Java 21, `ArrayBlockingQueue`                           | Em andamento |
-| 03  | [Leitura Arquivo Multithread](atividades/contador-caracteres/README.md)                                       | Paralelismo de dados e processamento de arquivos | Java 21, `ExecutorService`, `AtomicInteger`             | Em andamento |
-| 04  | [RTOS: Determinismo e Inversão de Prioridade](atividades/rtos-determinismo/README.md)                         | Escalonamento, jitter, prioridade e RTOS         | C, pthreads, `SCHED_FIFO`, Zephyr, QEMU                 | Em andamento |
-| 05  | [Estudo sobre Protocolo de Roteamento RPL](atividades/protocolo-rpl/README.md)                                | LLN, IoT, RPL, resiliência e roteamento          | Revisão bibliográfica, LaTeX, Overleaf, IEEE Conference | Em andamento |
+| #   | Título                                                                                                        | Tema central                                     | Stack de programação                                    | Status         |
+| --- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------- | -------------- |
+| 01  | [Análise do Hypervisor e do Impacto da Máquina Virtual sobre o Host](atividades/hypervisor-vm-host/README.md) | Virtualização, KVM, observabilidade de recursos  | KVM/QEMU, libvirt, `pidstat`, `strace`, `iostat`        | Entregue 15/04 |
+| 02  | [Problema Produtor-Consumidor](atividades/produto-consumidor/README.md)                                       | Concorrência, sincronização e fila bloqueante    | Java 21, `ArrayBlockingQueue`                           | Entregue 15/04 |
+| 03  | [Leitura Arquivo Multithread](atividades/contador-caracteres/README.md)                                       | Paralelismo de dados e processamento de arquivos | Java 21, `ExecutorService`, `AtomicInteger`             | Entregue 15/04 |
+| 04  | [RTOS: Determinismo e Inversão de Prioridade](atividades/rtos-determinismo/README.md)                         | Escalonamento, jitter, prioridade e RTOS         | C, pthreads, `SCHED_FIFO`, Zephyr, QEMU                 | Entregue 15/04 |
+| 05  | [Estudo sobre Protocolo de Roteamento RPL](atividades/protocolo-rpl/README.md)                                | LLN, IoT, RPL, resiliência e roteamento          | Revisão bibliográfica, LaTeX, Overleaf, IEEE Conference | Em andamento   |
 
 ---
 

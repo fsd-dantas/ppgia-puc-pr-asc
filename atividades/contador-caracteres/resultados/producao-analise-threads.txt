@@ -1,0 +1,39 @@
+Diretorio: D:\yggdrasil\nidavellir\pucpr\ppgia-puc-pr-asc\atividades\contador-caracteres\dados\todosArquivos
+Arquivos .txt encontrados: 34055
+Analise de threads:
+ 1 threads ->   11.332 s (11331 ms)
+ 2 threads ->    2.455 s (2455 ms)
+ 4 threads ->    1.341 s (1340 ms)
+ 6 threads ->    1.269 s (1268 ms)
+ 8 threads ->    0.925 s (924 ms)
+12 threads ->    0.904 s (904 ms)
+16 threads ->    0.931 s (930 ms)
+24 threads ->    0.922 s (921 ms)
+
+Melhor configuracao nesta execucao: 12 threads
+A: 7584025
+B: 710564
+C: 2248600
+D: 3228111
+E: 6765352
+F: 707274
+G: 808970
+H: 542937
+I: 4239239
+J: 238301
+K: 49950
+L: 1937723
+M: 2473287
+N: 3188020
+O: 6471878
+P: 1897361
+Q: 478992
+R: 4344514
+S: 4499835
+T: 2943839
+U: 2256073
+V: 808644
+W: 39818
+X: 176301
+Y: 45953
+Z: 215838

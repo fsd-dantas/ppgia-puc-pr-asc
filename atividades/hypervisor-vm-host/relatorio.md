@@ -2,8 +2,10 @@
 
 **Disciplina:** Arquitetura de Sistemas Computacionais  
 **Programa:** PPGIA — Mestrado em Informática — PUC-PR  
-**Integrantes:** Fernando Sabino Dantas, Luciano Rasera 
+**Integrantes:** Fernando Sabino Dantas, Luciano Rasera
 **Data:** 15 de abril de 2026
+
+https://github.com/fsd-dantas/ppgia-puc-pr-asc
 
 ---
 
