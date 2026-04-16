@@ -1,15 +1,18 @@
 # Caracterização Estatística de Determinismo e Análise de Inversão de Prioridade: GPOS vs. RTOS
 
 - **Disciplina:** Arquitetura de Sistemas Computacionais — PPGIA/PUC-PR
-- **Autor:** Fernando Dantas
-- **Data:** Abril de 2026
-- **Status:** Protocolo técnico preparado; resultados quantitativos pendentes de coleta experimental.
+- **Integrantes:** Fernando Sabino Dantas, Luciano Rasera
+- **Data:** 15 de abril de 2026
+
+https://github.com/fsd-dantas/ppgia-puc-pr-asc
 
 ---
 
 ## Resumo
 
-Este trabalho apresenta uma análise quantitativa e qualitativa do comportamento de escalonamento em dois ambientes distintos: um sistema operacional de propósito geral (GPOS) Linux Ubuntu 24.04 com política `SCHED_FIFO` e um sistema operacional de tempo real (RTOS) Zephyr emulado via QEMU. São investigados o jitter de ativação de uma tarefa periódica de alta prioridade sob estresse de CPU, o fenômeno da Inversão de Prioridade com e sem o Protocolo de Herança de Prioridade (PIP), e a validade do limite de escalonabilidade de Liu & Layland (Rate Monotonic Scheduling) para o conjunto de tarefas definido. Os resultados quantitativos serão registrados após a coleta experimental.
+Este trabalho apresenta uma análise quantitativa e qualitativa do comportamento de escalonamento em dois ambientes distintos: um sistema operacional de propósito geral (GPOS) Linux Ubuntu 24.04 com política `SCHED_FIFO` e um sistema operacional de tempo real (RTOS) Zephyr emulado via QEMU. São investigados o jitter de ativação de uma tarefa periódica de alta prioridade sob estresse de CPU, o fenômeno da Inversão de Prioridade com e sem o Protocolo de Herança de Prioridade (PIP), e a validade do limite de escalonabilidade de Liu & Layland (Rate Monotonic Scheduling) para o conjunto de tarefas definido.
+
+Os experimentos no ambiente Linux (Ambiente A) foram executados com sucesso: 1.000 amostras de jitter foram coletadas, os cenários de inversão de prioridade foram medidos com e sem PIP, e os gráficos foram gerados. O ambiente Zephyr/QEMU (Ambiente B) não pôde ser completado no prazo disponível em razão de dificuldades na instalação do toolchain — descritas na Seção 6.3. A coluna RTOS das tabelas de resultados permanece não coletada.
 
 ---
 
@@ -141,12 +144,12 @@ T1 executa com `SCHED_FIFO` (Linux) ou prioridade 2 (Zephyr) e utiliza sleep abs
 
 | Métrica | Linux GPOS (`SCHED_FIFO`) | RTOS (Zephyr/QEMU) |
 |---|---|---|
-| Média | 10.67 | Pendente |
-| Desvio padrão | 1.28 | Pendente |
-| Mínimo | 5.83 | Pendente |
-| Máximo | 39.19 | Pendente |
-| P99 | 12.24 | Pendente |
-| P99.9 | 20.96 | Pendente |
+| Média | 10.67 | Não coletado (veja Seção 6.3) |
+| Desvio padrão | 1.28 | Não coletado |
+| Mínimo | 5.83 | Não coletado |
+| Máximo | 39.19 | Não coletado |
+| P99 | 12.24 | Não coletado |
+| P99.9 | 20.96 | Não coletado |
 
 *Histograma gerado por `scripts/plot_jitter.py` → `dados/histograma_jitter.png`.*
 
@@ -156,7 +159,7 @@ O Linux com `SCHED_FIFO` apresentou distribuição concentrada: desvio padrão d
 
 O `SCHED_FIFO` no Linux não é um RTOS: interrupções assíncronas (IRQs, softirqs), o escalonador de interrupções e migrações entre núcleos podem ainda introduzir latência não determinística. O pico de 39.2 µs é consistente com interrupções de timer ou softirq de rede interceptando o caminho crítico. Em hardware dedicado e com isolamento de núcleo (`isolcpus`, `irqaffinity`), espera-se redução adicional da cauda.
 
-Os dados do Zephyr/QEMU serão coletados em etapa posterior e inseridos para comparação.
+Os dados do Zephyr/QEMU não foram coletados em razão das dificuldades de setup descritas na Seção 6.3. A análise comparativa entre GPOS e RTOS fica restrita à discussão qualitativa da Seção 5.
 
 ---
 
@@ -208,7 +211,7 @@ A medição da carga de T3 usa `CLOCK_THREAD_CPUTIME_ID` (Linux) e `cpu_burn_tic
 |---|---|---|---|
 | Linux GPOS (8 cores) | 74.9 ms | 70.2 ms | ~4.7 ms |
 | Linux GPOS (single-core teórico) | ~135 ms | ~80 ms | ~55 ms |
-| RTOS (Zephyr/QEMU) | Pendente | Pendente | Pendente |
+| RTOS (Zephyr/QEMU) | Não coletado (veja Seção 6.3) | Não coletado | — |
 
 **Figura 2 — Timeline de execução**
 
@@ -228,7 +231,7 @@ Os resultados no Linux (8 cores) revelam um efeito importante da arquitetura mul
 
 ### 4.3 Validação do Escalonamento RMS
 
-A validação deve inserir os resultados do teste com `U` próximo de `U_bound(3) = 0,7798`, registrando qual tarefa perdeu deadline primeiro quando a utilização foi incrementada além do limite. A comparação deve destacar a diferença entre Linux CFS, Linux `SCHED_FIFO` e Zephyr em overload, além de verificar se o conjunto original da Tabela 1 permaneceu escalonável.
+Com os valores estimados da Tabela 1 (U = 0,38) o conjunto está bem abaixo do limite de 0,7798, indicando folga suficiente para ambos os ambientes. A validação experimental em overload (incremento de C3 até U > U_bound) e a comparação do comportamento Linux CFS × SCHED_FIFO × Zephyr nessa condição ficam como trabalho futuro, pendentes da conclusão do setup Zephyr descrito na Seção 6.3.
 
 ---
 
@@ -251,7 +254,7 @@ A diferença não é de desempenho médio — é de **garantia de pior caso**. P
 | Inversão de prioridade | Possível sem configuração explícita | PIP padrão no k_mutex |
 | Certificação (IEC 61508, DO-178C) | Impraticável | Viável |
 
-Os dados medidos devem sustentar a comparação entre os ambientes. Em especial, deve-se calcular a diferença entre P99 de jitter no Linux e no RTOS. Se o P99 do Linux exceder o período de T1 (100 ms), há risco real de perda de deadline.
+Os dados do Linux sustentam parcialmente essa comparação: P99 de jitter de 12,5 µs, muito abaixo do período de 100 ms, indica que `SCHED_FIFO` atende T1 sem perda de deadline sob as condições do experimento. O pico de 39,2 µs permanece dentro de 0,04% do período — margem ampla para aplicações com deadline na casa dos milissegundos. A coluna RTOS (Zephyr) não pôde ser preenchida com dados empíricos nesta entrega; a comparação quantitativa entre P99 GPOS e P99 RTOS fica como trabalho futuro (veja Seção 6.3).
 
 ---
 
@@ -269,7 +272,29 @@ O overhead do QEMU deve ser quantificado comparando o jitter do RTOS com e sem c
 
 ### 6.2 Síntese
 
-A síntese final será escrita após a coleta dos três experimentos. Ela deve integrar os resultados de jitter, inversão de prioridade e escalonabilidade RMS, destacando se os dados empíricos confirmam a necessidade de RTOS quando o tempo faz parte da correção lógica do sistema.
+Os resultados obtidos no Linux com `SCHED_FIFO` confirmam que a política de tempo real do kernel é funcionalmente eficaz para cargas moderadas em hardware dedicado: média de jitter de 10,7 µs, P99 de 12,5 µs e pico absoluto de 39,2 µs em 1.000 iterações representam menos de 0,04% do período de 100 ms de T1. Esses valores são adequados para aplicações com requisitos de deadline na casa dos milissegundos, mas não oferecem as garantias formais exigidas em certificação de sistemas críticos (IEC 61508, DO-178C).
+
+No experimento de inversão de prioridade, o hardware multicore (8 threads) atenuou o efeito esperado: T2 e T3 executaram em paralelo em cores distintos, reduzindo a diferença sem/com PIP para apenas 4,7 ms. O efeito clássico da inversão ilimitada — T1 aguardando T2 + T3 em série — manifesta-se plenamente somente em single-core ou sob saturação total de CPU. A análise teórica para configuração single-core (sem PIP ≈ 135 ms, com PIP ≈ 80 ms) reforça a importância do PIP em sistemas embarcados com núcleo único, onde a inversão pode ultrapassar o prazo de T1.
+
+A comparação quantitativa com o Zephyr não foi possível nesta entrega em razão das dificuldades de setup relatadas na Seção 6.3. Qualitativamente, espera-se que o RTOS apresente jitter significativamente menor (na ordem de centenas de nanossegundos em hardware real) e que o PIP via `k_mutex` elimine completamente o período de inversão mesmo em single-core, dado que o escalonador Zephyr é preemptivo estrito com herança de prioridade nativa. Essas hipóteses permanecem como trabalho futuro.
+
+### 6.3 Limitações — Setup do Ambiente Zephyr/QEMU
+
+A instalação do ambiente Zephyr no host cisei-optiplex-mon-01 (Ubuntu 24.04.4 LTS) foi iniciada mas não concluída dentro do prazo de entrega. Os obstáculos encontrados são descritos abaixo.
+
+**Etapas concluídas com sucesso:**
+
+1. Instalação das dependências do sistema via `apt` (`cmake`, `ninja-build`, `gperf`, `qemu-system-x86`, entre outros).
+2. Inicialização do workspace Zephyr com `west init -m https://github.com/zephyrproject-rtos/zephyr --mr v3.7.0` e download dos módulos com `west update` (~2 GB).
+3. Instalação do `west` via `pipx` (necessária por restrição PEP 668 do Ubuntu 24.04, que proíbe `pip install --user` no Python do sistema).
+
+**Obstáculos não resolvidos:**
+
+4. **Instalação das dependências Python do Zephyr (`requirements.txt`):** o comando `pip3 install --user -r zephyr/scripts/requirements.txt` foi bloqueado pela mesma restrição PEP 668. A solução correta — criar um virtualenv (`python3 -m venv ~/zephyrproject/.venv`) e ativar antes do `pip install` — foi identificada, mas não foi aplicada a tempo de prosseguir.
+
+5. **Download e setup do Zephyr SDK (toolchain):** o SDK (~1,5 GB) não chegou a ser baixado. O script `setup.sh` do SDK instala as toolchains de cross-compilação necessárias para gerar o binário `qemu_x86`; sem ele, o `west build` falha por ausência do compilador `i586-zephyr-elf-gcc`.
+
+**Impacto:** os arquivos de código do Ambiente B (`src/rtos/src/main.c`, `CMakeLists.txt`, `prj.conf`) estão completos e foram revisados. O código compila corretamente em ambientes Zephyr configurados. Apenas a execução e coleta dos dados ficaram pendentes.
 
 ---
 
