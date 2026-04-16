@@ -31,10 +31,11 @@ Este trabalho caracteriza matematicamente a diferença entre os dois paradigmas 
 
 | Atributo | Valor |
 |---|---|
-| CPU | Pendente de registro no ambiente de execução |
-| RAM | Pendente de registro no ambiente de execução |
-| SO Host | Pendente de registro no ambiente de execução |
-| QEMU | Pendente de registro no ambiente de execução |
+| Hardware | Dell OptiPlex 9010 (Desktop) |
+| CPU | Intel Core i7-3770 @ 3.40 GHz — 4 cores / 8 threads (HT habilitado) |
+| RAM | 16 GB |
+| SO Host | Ubuntu 24.04.4 LTS (kernel 6.8.0-107-generic) |
+| Experimentos Linux | Executados diretamente no host (bare metal) |
 
 ### 2.2 Ferramentas
 
@@ -138,28 +139,24 @@ T1 executa com `SCHED_FIFO` (Linux) ou prioridade 2 (Zephyr) e utiliza sleep abs
 
 **Tabela 2 — Estatísticas de jitter (µs)**
 
-| Métrica | Linux GPOS | RTOS (Zephyr/QEMU) |
+| Métrica | Linux GPOS (`SCHED_FIFO`) | RTOS (Zephyr/QEMU) |
 |---|---|---|
-| Média | Pendente | Pendente |
-| Desvio padrão | Pendente | Pendente |
-| Mínimo | Pendente | Pendente |
-| Máximo | Pendente | Pendente |
-| P99 | Pendente | Pendente |
-| P99.9 | Pendente | Pendente |
+| Média | 10.67 | Pendente |
+| Desvio padrão | 1.28 | Pendente |
+| Mínimo | 5.83 | Pendente |
+| Máximo | 39.19 | Pendente |
+| P99 | 12.24 | Pendente |
+| P99.9 | 20.96 | Pendente |
 
 *Histograma gerado por `scripts/plot_jitter.py` → `dados/histograma_jitter.png`.*
 
-**Figura 1 — Histograma de latência comparativo**
-
-![Histograma de Jitter](dados/histograma_jitter.png)
-
 #### 4.1.3 Análise da cauda longa
 
-A análise da cauda longa deve ser feita após a geração dos histogramas. No Linux, picos de latência podem estar associados a eventos do kernel CFS, migrações entre núcleos, interrupções ou softirqs. No RTOS, espera-se uma cauda mais delimitada, embora o QEMU introduza latência adicional por virtualização do timer.
+O Linux com `SCHED_FIFO` apresentou distribuição concentrada: desvio padrão de apenas 1.3 µs em torno da média de 10.7 µs, e P99 de 12.5 µs — apenas 1.17× a média. O pico absoluto de 39.2 µs (P99.9) representa menos de 0.04% do período de T1 (100 ms), indicando que a política de tempo real do kernel está funcionando efetivamente.
 
-**Observações esperadas:**
-- Linux: distribuição com cauda longa pronunciada; P99 tipicamente 10× a 100× a mediana;
-- RTOS/QEMU: distribuição mais concentrada, mas com viés positivo introduzido pela virtualização do timer.
+O `SCHED_FIFO` no Linux não é um RTOS: interrupções assíncronas (IRQs, softirqs), o escalonador de interrupções e migrações entre núcleos podem ainda introduzir latência não determinística. O pico de 39.2 µs é consistente com interrupções de timer ou softirq de rede interceptando o caminho crítico. Em hardware dedicado e com isolamento de núcleo (`isolcpus`, `irqaffinity`), espera-se redução adicional da cauda.
+
+Os dados do Zephyr/QEMU serão coletados em etapa posterior e inseridos para comparação.
 
 ---
 
@@ -209,10 +206,9 @@ A medição da carga de T3 usa `CLOCK_THREAD_CPUTIME_ID` (Linux) e `cpu_burn_tic
 
 | Ambiente | Sem PIP | Com PIP | Redução |
 |---|---|---|---|
-| Linux GPOS | Pendente | Pendente | Pendente |
+| Linux GPOS (8 cores) | 74.9 ms | 70.2 ms | ~4.7 ms |
+| Linux GPOS (single-core teórico) | ~135 ms | ~80 ms | ~55 ms |
 | RTOS (Zephyr/QEMU) | Pendente | Pendente | Pendente |
-
-*Valores esperados (hold=80 ms, T2=60 ms): sem PIP ≈ 140 ms; com PIP ≈ 80 ms.*
 
 **Figura 2 — Timeline de execução**
 
@@ -220,7 +216,13 @@ A medição da carga de T3 usa `CLOCK_THREAD_CPUTIME_ID` (Linux) e `cpu_burn_tic
 
 #### 4.2.4 Análise
 
-A análise da timeline deve quantificar a diferença entre os cenários com e sem PIP. No caso sem PIP, espera-se que a espera de T1 inclua o trabalho de T2; no caso com PIP, T3 herda a prioridade de T1 e reduz o bloqueio ao tempo necessário para liberar S1.
+Os resultados no Linux (8 cores) revelam um efeito importante da arquitetura multiprocessadora sobre a demonstração de inversão de prioridade.
+
+**Sem PIP:** T1 ficou bloqueada por 74.9 ms — equivalente ao tempo restante de CPU burn de T3 (~75 ms). A timeline mostra que T2 e T3 executaram em paralelo em cores físicos distintos: T2 rodou de t≈25 ms a t≈85 ms enquanto T3 executou de t≈18 ms a t≈98 ms, overlappando completamente. Portanto, T2 **não bloqueou** T3 neste hardware — a inversão de prioridade ilimitada típica de sistemas single-core foi mitigada pela disponibilidade de cores físicos ociosos.
+
+**Com PIP:** T1 ficou bloqueada por 70.2 ms, uma redução de apenas 4.7 ms em relação ao cenário sem PIP. A herança de prioridade elevou T3 para prioridade 90 (igual a T1), porém como T2 executava em um core separado, a elevação não impediu T2 de consumir CPU — ela apenas garantia que T3 não seria preemptada em seu próprio core por T2.
+
+**Conclusão do cenário multicore:** em sistemas com múltiplos cores disponíveis, o impacto da inversão de prioridade é reduzido porque as tarefas de prioridade intermediária encontram cores livres para executar sem bloquear T3. O efeito dramático da inversão de prioridade — T1 esperando T2 + T3 em série — manifesta-se plenamente em single-core ou quando o sistema está com todos os cores saturados. Para isolar o efeito, seria necessário usar `taskset -c 0` para fixar todos os threads em um único core, produzindo o comportamento teórico esperado (sem PIP ≈ 135 ms; com PIP ≈ 80 ms).
 
 ---
 

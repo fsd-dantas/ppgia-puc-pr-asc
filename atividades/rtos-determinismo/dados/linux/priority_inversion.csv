@@ -1,0 +1,19 @@
+scenario,task,event,wall_us
+no_pip,T3,"tentando adquirir S1",17859
+no_pip,T3,"adquiriu S1 — trabalho pesado (CPU burn)",17877
+no_pip,T1,"tentando adquirir S1",22961
+no_pip,T2,"iniciou trabalho médio (CPU burn)",25438
+no_pip,T2,"fim",85445
+no_pip,T3,"trabalho concluído — liberando S1",97891
+no_pip,T3,"fim",97897
+no_pip,T1,"adquiriu S1",97902
+no_pip,T1,"fim",97913
+pip,T3,"tentando adquirir S1",10179
+pip,T3,"adquiriu S1 — trabalho pesado (CPU burn)",10197
+pip,T1,"tentando adquirir S1",20084
+pip,T2,"iniciou trabalho médio (CPU burn)",20089
+pip,T2,"fim",80115
+pip,T3,"trabalho concluído — liberando S1",90207
+pip,T3,"fim",90216
+pip,T1,"adquiriu S1",90251
+pip,T1,"fim",90285
