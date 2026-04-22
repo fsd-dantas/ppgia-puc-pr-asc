@@ -1,0 +1,501 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, fit, backgrounds, positioning}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+
+\title{RPL como Protocolo de Roteamento para Backhaul Sem Fio em
+Field Area Networks de Infraestruturas Críticas%
+\thanks{Artefatos disponíveis em:
+\url{https://github.com/fsd-dantas/ppgia-puc-pr-asc}}}
+
+\author{
+  \IEEEauthorblockN{Fernando Sabino Dantas}
+  \IEEEauthorblockA{
+    \textit{Programa de Pós-Graduação em Informática (PPGIa)}\\
+    \textit{Pontifícia Universidade Católica do Paraná (PUCPR)}\\
+    Curitiba, Brasil\\
+    fsd.dantas@gmail.com
+  }
+}
+
+\maketitle
+
+% ─── ABSTRACT (English) ──────────────────────────────────────────────────────
+\begin{abstract}
+Modern critical infrastructures --- particularly electric distribution networks
+--- require pervasive, resilient, and cost-effective communication across
+geographically dispersed field assets. Traditional backhaul solutions (fiber,
+cellular, power-line communication) present economic, operational, or technical
+constraints that limit their applicability in last-mile field environments.
+Wireless mesh Field Area Networks (FANs), operating over constrained radio
+links, have emerged as a viable backhaul alternative, with RPL (IPv6 Routing
+Protocol for Low-Power and Lossy Networks, RFC~6550) serving as their standard
+routing layer. This paper presents an overview and tutorial of RPL in the
+context of FAN backhaul, covering its DODAG-based architecture, control
+messaging (DIO, DAO, DIS), objective functions, routing metrics, and resilience
+mechanisms for link failure and dynamic topology reconfiguration. The Wi-SUN
+FAN profile, which formalizes RPL deployment for utility networks, is discussed
+alongside simulation tools (Contiki-NG, Cooja) and applications in advanced
+metering infrastructure, distribution automation, and wireless SCADA. Open
+challenges in scalability, determinism, and integration with operational
+technology protocols (IEC~61850, DNP3) are also addressed.
+\end{abstract}
+
+\begin{IEEEkeywords}
+RPL, FAN, backhaul sem fio, LLN, DODAG, smart grid, automação de distribuição,
+Wi-SUN, infraestrutura crítica
+\end{IEEEkeywords}
+
+% ─── I. INTRODUÇÃO ───────────────────────────────────────────────────────────
+\section{Introdução}
+
+Redes de distribuição elétrica, redes de água e gás, e infraestruturas de
+transporte urbano dependem de comunicação confiável entre ativos de campo
+dispersos geograficamente --- medidores, sensores, chaves automatizadas,
+transformadores e subestações. A ausência de comunicação ou sua degradação
+compromete diretamente a operação do sistema: sem telemetria em tempo real,
+faltas não são isoladas automaticamente, o balanço de carga é realizado de
+forma manual e a qualidade de energia não pode ser monitorada continuamente
+\cite{gungor2011smartgrid}.
+
+\subsection{Limitações das Soluções de Backhaul Convencionais}
+
+Três tecnologias dominam o backhaul em infraestruturas críticas hoje:
+
+\textbf{Fibra óptica}: oferece largura de banda e latência ideais, mas seu custo
+de implantação em campo (obras civis, passagem por estruturas de terceiros) é
+proibitivo para cobrir a capilaridade total de uma rede de distribuição. Em
+áreas rurais, a ausência de dutos existentes eleva o custo por km a valores
+incompatíveis com o orçamento de operação e manutenção~\cite{gungor2011smartgrid}.
+
+\textbf{LTE privado (Band 31 / 450~MHz)}: concessionárias brasileiras operam
+redes LTE próprias na faixa de 450~MHz, licenciada pela ANATEL para serviços
+de infraestrutura crítica. Essa faixa sub-GHz oferece cobertura de área
+superior às bandas convencionais e elimina a dependência operacional de
+terceiros~\cite{saputro2012routing}. Contudo, o LTE privado atua como WAN
+entre concentradores e o sistema de gestão; a camada de campo --- milhares de
+medidores, sensores e atuadores com custo unitário baixo e consumo restrito
+--- demanda uma rede de acesso com custo de módulo e energia inferiores ao de
+uma interface LTE dedicada por dispositivo. A malha RPL/FAN opera exatamente
+nessa camada, agregando o tráfego de campo nos concentradores que então se
+comunicam com o head-end via LTE Band~31. As duas tecnologias são
+complementares, não concorrentes.
+
+\textbf{Comunicação por linha de potência (PLC)}: aproveita a infraestrutura
+elétrica existente, mas sofre com interferência de alta frequência gerada pelos
+próprios equipamentos da rede, atenuação variável com a carga e dificuldade de
+operação em topologias de média tensão.
+
+\subsection{Field Area Networks como Alternativa de Backhaul}
+
+Redes de campo sem fio --- denominadas Field Area Networks (FANs) ou
+Neighborhood Area Networks (NANs) no contexto de medição avançada --- operam na
+camada entre os dispositivos de campo (medidores, sensores, atuadores) e os
+concentradores de dados ou gateways que se conectam à rede de gestão. A
+Figura~\ref{fig:fan} ilustra a hierarquia típica: dispositivos de campo formam
+uma malha sem fio multihop que converge em concentradores de dados, os quais se
+conectam ao sistema de back-office via WAN~\cite{ancillotti2013rpl}.
+
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}[
+    dev/.style   = {circle, draw=black!55, fill=gray!25,
+                    minimum size=7pt, inner sep=0},
+    infra/.style = {rectangle, rounded corners=2pt,
+                    draw=black!75, fill=white,
+                    minimum width=1.5cm, minimum height=0.7cm,
+                    font=\scriptsize\bfseries, align=center},
+    rpl/.style   = {-Latex, black!40, thin,
+                    shorten <=1.5pt, shorten >=1.5pt},
+    wan/.style   = {-Latex, black!80, thick, dashed,
+                    shorten <=3pt, shorten >=3pt},
+    >=Latex, scale=0.92
+  ]
+    %% ── field devices (DODAG leaves / intermediate nodes) ──
+    \node[dev] (d1) at (0.0,  0.0) {};
+    \node[dev] (d2) at (0.0,  1.0) {};
+    \node[dev] (d3) at (0.8,  1.6) {};
+    \node[dev] (d4) at (0.8,  0.5) {};
+    \node[dev] (d5) at (0.4, -0.5) {};
+    \node[dev] (d6) at (1.6,  1.0) {};
+
+    %% ── infrastructure ──────────────────────────────────────
+    \node[infra] (dap) at (3.1, 0.5) {Concentrador\\(DAP)};
+    \node[infra] (he)  at (5.6, 0.5) {Head-end\\SCADA};
+
+    %% ── RPL upward routes (toward DODAG root = DAP) ─────────
+    \draw[rpl] (d1) -- (d4);
+    \draw[rpl] (d2) -- (d4);
+    \draw[rpl] (d5) -- (d4);
+    \draw[rpl] (d3) -- (d6);
+    \draw[rpl] (d6) -- (dap);
+    \draw[rpl] (d4) -- (dap);
+
+    %% ── WAN backhaul ────────────────────────────────────────
+    \draw[wan] (dap) --
+      node[above, font=\tiny] {LTE Band~31}
+      node[below, font=\tiny] {450\,MHz / WAN}
+      (he);
+
+    %% ── FAN zone background ─────────────────────────────────
+    \begin{scope}[on background layer]
+      \fill[gray!10, rounded corners=5pt]
+        (-0.45,-0.85) rectangle (2.35, 2.1);
+    \end{scope}
+
+    %% ── zone labels ─────────────────────────────────────────
+    \node[font=\tiny, text=black!55, align=center]
+      at (0.95, -1.2) {FAN --- RPL\,/\,IEEE~802.15.4g\,/\,Wi-SUN};
+    \node[font=\tiny, text=black!55]
+      at (4.35, -1.2) {WAN};
+
+    %% ── device legend ───────────────────────────────────────
+    \node[dev, scale=0.7] at (0.0, 2.55) {};
+    \node[font=\tiny, text=black!60, right]
+      at (0.15, 2.55) {Medidor\,/\,Sensor\,/\,Atuador};
+  \end{tikzpicture}
+  \caption{Arquitetura de comunicação em redes de distribuição.
+           O RPL atua na camada FAN, provendo roteamento multihop
+           entre dispositivos de campo e concentradores.}
+  \label{fig:fan}
+\end{figure}
+
+A FAN opera tipicamente sobre IEEE~802.15.4g~\cite{ieee802154g} --- extensão
+do padrão original para comunicação em redes utilitárias, com suporte a
+frequências sub-GHz (169, 433, 868/915~MHz) que oferecem maior alcance (500~m
+a 2~km em espaço aberto) e melhor penetração em estruturas físicas do que as
+faixas de 2,4~GHz. Sobre essa camada física, o padrão Wi-SUN~\cite{wisun2022}
+especifica a pilha completa: IEEE~802.15.4g / 6LoWPAN / IPv6 / RPL, com perfis
+de segurança e interoperabilidade para implantação em escala por concessionárias.
+
+\subsection{RPL como Protocolo de Roteamento para FANs}
+
+O RPL (\textit{IPv6 Routing Protocol for Low-Power and Lossy
+Networks})~\cite{winter2012rpl}, padronizado pelo IETF na RFC~6550, foi
+concebido especificamente para redes com enlace sem fio de baixa confiabilidade
+e dispositivos com recursos restritos --- as mesmas condições encontradas em
+FANs de infraestrutura. Ao contrário de protocolos tradicionais (AODV, OSPF,
+DSR), o RPL considera métricas de qualidade de enlace e energia na construção
+de rotas, suporta topologias com milhares de nós e opera com overhead de
+controle compatível com dispositivos embarcados~\cite{ancillotti2013rpl}.
+
+Este trabalho apresenta o RPL no contexto de backhaul FAN, organizado da
+seguinte forma: a Seção~\ref{sec:arch} descreve a arquitetura e o funcionamento
+do protocolo; a Seção~\ref{sec:resilience} analisa os mecanismos de resiliência;
+a Seção~\ref{sec:tools} discute ferramentas de simulação; a
+Seção~\ref{sec:apps} aborda aplicações em infraestruturas críticas; e a
+Seção~\ref{sec:conclusion} apresenta as conclusões.
+
+% ─── II. ARQUITETURA E FUNCIONAMENTO ─────────────────────────────────────────
+\section{Arquitetura e Funcionamento do RPL}
+\label{sec:arch}
+
+\subsection{Estrutura DODAG}
+
+O RPL organiza a topologia em grafos acíclicos dirigidos orientados a destino
+--- DODAGs (\textit{Destination Oriented Directed Acyclic Graphs}). Em uma FAN,
+o \textit{DODAG Root} é tipicamente o concentrador de dados ou data aggregation
+point (DAP) que conecta a malha de campo à WAN. Cada nó mantém um valor de
+\textit{rank}, representando sua posição relativa ao concentrador: o concentrador
+possui rank mínimo e dispositivos mais distantes possuem rank crescente.
+
+O identificador de cada instância DODAG é o \textit{DODAGID}, acompanhado por
+um \textit{DODAGVersionNumber} incrementado a cada reconstrução global da
+topologia. Múltiplas instâncias RPL podem coexistir na mesma malha física,
+permitindo, por exemplo, que o tráfego de medição e o tráfego de automação de
+distribuição utilizem topologias otimizadas para métricas
+distintas~\cite{winter2012rpl}.
+
+\subsection{Mensagens de Controle}
+
+O RPL define três tipos de mensagens ICMPv6~\cite{winter2012rpl}:
+
+\textbf{DIO (\textit{DODAG Information Object})}: Propagado pelo concentrador e
+retransmitido pelos nós descendentes, o DIO contém DODAGID, versão, rank do
+transmissor, função objetivo em uso e parâmetros de configuração. Dispositivos
+de campo utilizam o DIO para selecionar o pai preferencial e calcular seu rank.
+
+\textbf{DAO (\textit{Destination Advertisement Object})}: Propaga informações de
+alcançabilidade dos dispositivos de campo em direção ao concentrador, habilitando
+o roteamento descendente (do concentrador para os dispositivos). Em modo
+\textit{storing}, cada nó retém tabelas de roteamento dos seus descendentes; em
+modo \textit{non-storing}, somente o concentrador mantém o mapa completo e utiliza
+roteamento por fonte para tráfego descendente.
+
+\textbf{DIS (\textit{DODAG Information Solicitation})}: Enviado por dispositivos
+recém-implantados ou que perderam conectividade para acelerar a (re)descoberta da
+topologia. Ao receber um DIS, os vizinhos respondem com DIO, reduzindo o tempo de
+ingresso na rede --- relevante em cenários de substituição de equipamento em campo.
+
+\subsection{Algoritmo Trickle}
+
+O RPL utiliza o algoritmo Trickle~\cite{rfc6206} para controlar a frequência de
+transmissão dos DIOs. O Trickle adapta o intervalo entre limites mínimo
+($I_{min}$) e máximo ($I_{max}$): em topologias estáveis, o intervalo dobra a
+cada ciclo, reduzindo drasticamente o overhead de controle; quando inconsistências
+são detectadas, o intervalo reinicia a $I_{min}$ para convergência rápida. Em uma
+FAN com centenas de medidores, este mecanismo é determinante para manter o canal
+de rádio disponível para tráfego de dados.
+
+\subsection{Funções Objetivo e Métricas}
+
+A Função Objetivo (OF) define como o rank é calculado e como o pai preferencial
+é selecionado. As duas funções padronizadas são:
+
+\textbf{OF0}~\cite{rfc6552}: Utiliza hop count como métrica, minimizando a
+profundidade da árvore. Adequada para topologias homogêneas onde a qualidade
+de enlace é relativamente uniforme.
+
+\textbf{MRHOF}~\cite{rfc6719}: Utiliza ETX (\textit{Expected Transmission
+Count}) como métrica primária, com histerese para evitar oscilação entre pais
+de qualidade similar. O ETX captura tanto a taxa de perda de pacotes quanto as
+retransmissões de camada de enlace --- métrica especialmente relevante em
+ambientes com interferência eletromagnética variável, como subestações e
+corredores de linhas de transmissão.
+
+O framework de métricas~\cite{rfc6551} suporta adicionalmente energia residual,
+latência e confiabilidade de rota. A Tabela~\ref{tab:metrics} resume as opções
+disponíveis e sua relevância para FANs.
+
+\begin{table}[t]
+  \caption{Métricas de Roteamento RPL e Relevância para FAN}
+  \label{tab:metrics}
+  \centering
+  \begin{tabularx}{\columnwidth}{lX}
+    \toprule
+    \textbf{Métrica} & \textbf{Relevância em FAN} \\
+    \midrule
+    Hop count    & Minimiza latência em topologias homogêneas \\
+    ETX          & Captura qualidade real do enlace em campo \\
+    Energia      & Estende vida útil de dispositivos a bateria \\
+    Latência     & Requisito de DA e proteção de distância \\
+    Confiabilidade & Garante entrega em canais com interferência \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Modos de Operação}
+
+\textbf{Modo Storing}: Cada nó mantém tabela de roteamento para todos os
+descendentes; encaminhamento é hop-by-hop. Adequado para FANs de médio porte
+com concentradores de capacidade razoável.
+
+\textbf{Modo Non-Storing}: Somente o concentrador mantém informações de
+roteamento; tráfego descendente usa roteamento por fonte (path inserido no
+cabeçalho IPv6). Adequado para dispositivos de campo com memória mínima, ao
+custo de maior tamanho dos pacotes e dependência do concentrador no
+encaminhamento~\cite{winter2012rpl}.
+
+% ─── III. RESILIÊNCIA ────────────────────────────────────────────────────────
+\section{Resiliência no RPL}
+\label{sec:resilience}
+
+\subsection{Detecção de Falhas de Enlace}
+
+Em ambientes de campo, enlaces sem fio estão sujeitos a degradação por
+interferência eletromagnética, obstrução física (vegetação, estruturas metálicas)
+e variações atmosféricas. O RPL detecta falhas em múltiplas camadas: na camada
+de enlace, o IEEE~802.15.4 sinaliza falha via ausência de ACK após o número
+máximo de retransmissões; na camada de rede, a ausência de DIOs do pai
+preferencial por múltiplos intervalos Trickle indica falha do nó pai.
+
+Dispositivos monitoram continuamente o ETX dos enlaces com candidatos a pai.
+Degradação abrupta do ETX --- típica de equipamentos com interferência
+variável --- dispara reavaliação do pai sem aguardar detecção completa de
+falha~\cite{accettura2011rpl}.
+
+\subsection{Reparo Local e Reconfiguração Dinâmica}
+
+O reparo local é acionado quando um dispositivo perde conectividade com seu pai
+preferencial. O dispositivo examina sua lista de pais alternativos registrados
+a partir de DIOs previamente recebidos. Se um pai alternativo com rank inferior
+ao do dispositivo existir, a troca é realizada localmente, sem propagação à
+raiz, minimizando perturbação na malha~\cite{winter2012rpl}.
+
+Este mecanismo é crítico em FANs de distribuição elétrica: durante uma falta
+de linha, múltiplos dispositivos de campo podem perder enlace simultaneamente.
+A reconfiguração local paralela e independente de cada dispositivo garante
+continuidade do fluxo de telemetria sem coordenação centralizada --- propriedade
+especialmente relevante em cenários de black-out parcial onde o próprio
+concentrador pode estar temporariamente inacessível.
+
+A detecção de inconsistência de rank previne loops: se um nó recebe DIO de um
+suposto descendente com rank inferior ao seu, detecta inversão de rota e
+descarta o pai atual imediatamente~\cite{winter2012rpl}.
+
+\subsection{Reparo Global}
+
+Quando o reparo local é insuficiente --- particionamento da rede ou degradação
+sistêmica após evento de grande escala --- o concentrador incrementa o
+\textit{DODAGVersionNumber}, forçando reconstrução completa do DODAG. O
+algoritmo Trickle reiniciado a $I_{min}$ propaga o novo DIO rapidamente pela
+malha. O custo de convergência é elevado, devendo ser reservado para falhas que
+o reparo local não pode corrigir.
+
+\subsection{Segurança}
+
+O RPL define modos de segurança com suporte a AES-128 CCM* para proteção de
+mensagens de controle. Em FANs de infraestrutura crítica, ataques documentados
+incluem: o \textit{rank attack} (nó malicioso anuncia rank baixo para atrair
+tráfego), o \textit{version number attack} (força reparos globais contínuos,
+degradando disponibilidade) e o \textit{sinkhole attack} (nó comprometido
+intercepta tráfego da malha)~\cite{korte2012rplattacks}. O perfil Wi-SUN
+endereça essas vulnerabilidades com autenticação mútua por certificados X.509 e
+gerenciamento de chaves por KMP (\textit{Key Management Protocol}).
+
+% ─── IV. FERRAMENTAS E FRAMEWORKS ────────────────────────────────────────────
+\section{Ferramentas e Frameworks}
+\label{sec:tools}
+
+\subsection{Contiki-NG}
+
+Contiki-NG~\cite{dunkels2004contiki} é o sistema operacional de referência para
+desenvolvimento e avaliação de RPL. Sua arquitetura baseada em protothreads
+permite concorrência cooperativa com consumo de 10--30~KB de flash e 2--5~KB de
+RAM. Inclui implementações completas de RPL (storing e non-storing), 6LoWPAN,
+TSCH e CoAP, cobrindo toda a pilha de um nó Wi-SUN. A compatibilidade com
+plataformas como Zolertia RE-Mote (sub-GHz) e nRF52840 viabiliza prototipagem
+direta para hardware de campo.
+
+\subsection{Cooja}
+
+O simulador Cooja~\cite{tsiftes2010cooja} emula redes com centenas de nós em
+nível de instrução, executando o mesmo binário compilado para hardware real.
+Para pesquisa em FANs, as funcionalidades mais relevantes são: visualização
+gráfica da topologia DODAG ao longo do tempo, captura de pacotes integrada ao
+Wireshark (IEEE~802.15.4/6LoWPAN/RPL), coleta de métricas de energia via
+PowerTrace e scripting JavaScript para automação de experimentos com injeção
+de falhas controlada.
+
+\subsection{RIOT OS e ns-3}
+
+O RIOT OS oferece modelo de threading POSIX com amplo suporte a hardware
+embarcado e implementação do RPL conforme RFC~6550, adequada para avaliações de
+conformidade. O ns-3 fornece modelos de canal de alta fidelidade para avaliação
+em condições específicas de propagação, sendo utilizado em estudos de desempenho
+em ambientes com interferência industrial ou obstáculos físicos densos --- cenários
+típicos de subestações e corredores de linha de distribuição.
+
+\subsection{Análise de Tráfego em Campo}
+
+A validação de implantações reais demanda captura passiva do espectro sem
+interferência na rede operacional. Hardware como o Zolertia ZOUL e adaptadores
+ATUSB permitem análise de tráfego IEEE~802.15.4 via Wireshark, com dissectores
+para 6LoWPAN e RPL. Em ambientes sub-GHz (Wi-SUN), analisadores de espectro com
+suporte à faixa de 915~MHz são necessários para diagnóstico de coexistência com
+outros equipamentos de campo.
+
+% ─── V. APLICAÇÕES ───────────────────────────────────────────────────────────
+\section{Aplicações em Infraestruturas Críticas}
+\label{sec:apps}
+
+\subsection{Infraestrutura de Medição Avançada (AMI)}
+
+A AMI (\textit{Advanced Metering Infrastructure}) é a aplicação mais madura do
+RPL em backhaul de campo. Medidores inteligentes, instalados em transformadores
+de distribuição e ramais residenciais/comerciais, formam a malha FAN que
+transporta leituras de consumo, alertas de qualidade de energia e comandos de
+corte/religamento ao sistema de gestão da concessionária. O RPL, operando sobre
+IEEE~802.15.4g~\cite{ieee802154g}, viabiliza a formação automática da topologia
+multihop sem configuração manual por ponto~\cite{ancillotti2013rpl}.
+
+A escala típica de uma AMI metropolitana --- dezenas de milhares de medidores
+por concentrador --- exige as propriedades de escalabilidade e auto-organização
+do RPL. O \textit{rank-based} forwarding elimina a necessidade de tabelas de
+roteamento completas nos medidores, e o algoritmo Trickle garante que o overhead
+de controle não degrada o canal à medida que a rede cresce.
+
+\subsection{Automação de Distribuição e FDIR}
+
+A automação de distribuição inclui chaveamento remoto, monitoramento de
+transformadores e, especialmente, FDIR (\textit{Fault Detection, Isolation and
+Restoration}) --- a capacidade de isolar automaticamente um segmento com falta
+e restaurar o fornecimento pelos circuitos alternativos disponíveis. Para FDIR,
+a latência de comunicação é crítica: o intervalo entre a detecção da falta e a
+atuação da chave deve ser inferior a centenas de milissegundos em sistemas de
+proteção de distância~\cite{gungor2011smartgrid}.
+
+RPL puro não oferece garantias temporais determinísticas, mas sua integração com
+IEEE~802.15.4e TSCH no stack 6TiSCH~\cite{de2014orchestra} acrescenta
+escalonamento de slots que reduz jitter a valores compatíveis com automação de
+subestação. Essa combinação posiciona RPL/6TiSCH como substituto sem fio para
+enlaces SCADA cabeados em pontos onde a instalação física é inviável.
+
+\subsection{Monitoramento de Qualidade de Energia e SCADA Sem Fio}
+
+Sensores de qualidade de energia --- medidores de harmônicos, distorção de
+tensão, fator de potência e afundamentos --- distribuídos ao longo de
+alimentadores formam redes de monitoramento de baixo custo quando comunicam via
+RPL/FAN. A telemetria contínua permite ao operador identificar clientes com
+equipamentos geradores de harmônica, precificar energia reativa e antecipar
+falhas de transformador~\cite{ancillotti2013rpl}.
+
+O backhaul sem fio via RPL substitui com vantagem econômica os enlaces ponto-a-
+ponto dedicados (radio UHF, fibra) em subestações secundárias e pontos de
+monitoramento remotos, onde o volume de dados é baixo mas a disponibilidade
+do enlace é mandatória.
+
+\subsection{Desafios Abertos}
+
+\textbf{Escalabilidade}: Em FANs com dezenas de milhares de nós, o custo de
+reparo global após eventos de larga escala (tempestades que afetam centenas de
+km de linha) pode sobrecarregar o canal de rádio. Pesquisas em RPL hierárquico
+e particionamento de DODAG endereçam esse problema~\cite{accettura2011rpl}.
+
+\textbf{Integração com OT}: Sistemas SCADA legados operam com protocolos como
+DNP3 e IEC~61850, que requerem mapeamento sobre IPv6/UDP para transporte via
+RPL. A coexistência de requisitos de latência determinística (proteção) e
+coleta periódica (medição) na mesma malha FAN é um desafio de engenharia ativo.
+
+\textbf{Interoperabilidade multi-vendor}: O perfil Wi-SUN~\cite{wisun2022}
+avança na padronização, mas implantações mistas com equipamentos de diferentes
+fabricantes ainda exigem validação extensiva de compatibilidade, especialmente
+nos mecanismos de segurança e nos parâmetros Trickle.
+
+% ─── VI. CONCLUSÃO ───────────────────────────────────────────────────────────
+\section{Conclusão}
+\label{sec:conclusion}
+
+O RPL consolida-se como o protocolo de roteamento padrão para backhaul sem fio
+em Field Area Networks de infraestruturas críticas. Sua arquitetura DODAG, aliada
+ao algoritmo Trickle e às funções objetivo configuráveis, resolve os desafios de
+roteamento em malhas de campo de forma energicamente eficiente e sem configuração
+manual --- propriedades inatingíveis por protocolos projetados para redes
+convencionais.
+
+A resiliência do RPL diante de falhas de enlace e a reconfiguração dinâmica da
+topologia são especialmente valiosas em redes de distribuição elétrica, onde
+eventos físicos (faltas, intempéries) impactam simultaneamente múltiplos enlaces
+de comunicação. O padrão Wi-SUN, ao formalizar o uso do RPL sobre IEEE~802.15.4g
+com perfis de segurança e interoperabilidade, eleva o protocolo de proposta
+acadêmica a componente operacional de AMIs em escala global.
+
+As ferramentas Contiki-NG e Cooja fornecem ambiente completo para pesquisa e
+prototipagem, viabilizando avaliação de desempenho antes da implantação em campo.
+Os desafios remanescentes --- latência determinística para automação de
+distribuição, escalabilidade de reparo em eventos de grande escala e integração
+com protocolos OT legados --- representam linhas abertas de pesquisa com alto
+potencial de impacto em infraestruturas de distribuição de próxima geração.
+
+% ─── REFERÊNCIAS ─────────────────────────────────────────────────────────────
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

@@ -88,6 +88,13 @@ O artigo deve conter, no mínimo, as seguintes seções:
 |---|---|
 | `README.md` | Organização da atividade e transcrição estruturada do enunciado |
 | `relatorio.md` | Rascunho textual em Markdown para apoiar a escrita do artigo |
+| `artigo/main.tex` | Artigo final em LaTeX — template IEEE Conference |
+| `artigo/references.bib` | Bibliografia BibTeX (RFCs IETF + papers IEEE) |
+
+## Overleaf
+
+O projeto Overleaf de entrega está vinculado ao docente (marcelo.pellenz@pucpr.br).
+O código-fonte versionado neste repositório é a cópia de referência local.
 
 ## Observações
 
