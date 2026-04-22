@@ -40,7 +40,7 @@ Field Area Networks de Infraestruturas Críticas%
 
 % ─── ABSTRACT (English) ──────────────────────────────────────────────────────
 \begin{abstract}
-Modern critical infrastructures --- particularly electric distribution networks
+Critical infrastructures --- particularly electric distribution networks
 --- require pervasive, resilient, and cost-effective communication across
 geographically dispersed field assets. Traditional backhaul solutions (fiber,
 cellular, power-line communication) present economic, operational, or technical
@@ -60,7 +60,7 @@ technology protocols (IEC~61850, DNP3) are also addressed.
 \end{abstract}
 
 \begin{IEEEkeywords}
-RPL, FAN, backhaul sem fio, LLN, DODAG, smart grid, automação de distribuição,
+RPL, FAN, \textit{backhaul} sem fio, LLN, DODAG, \textit{smart grid}, automação de distribuição,
 Wi-SUN, infraestrutura crítica
 \end{IEEEkeywords}
 
@@ -78,7 +78,7 @@ forma manual e a qualidade de energia não pode ser monitorada continuamente
 
 \subsection{Limitações das Soluções de Backhaul Convencionais}
 
-Três tecnologias dominam o backhaul em infraestruturas críticas hoje:
+Três tecnologias dominam o \textit{backhaul} em infraestruturas críticas hoje:
 
 \textbf{Fibra óptica}: oferece largura de banda e latência ideais, mas seu custo
 de implantação em campo (obras civis, passagem por estruturas de terceiros) é
@@ -106,13 +106,13 @@ operação em topologias de média tensão.
 
 \subsection{Field Area Networks como Alternativa de Backhaul}
 
-Redes de campo sem fio --- denominadas Field Area Networks (FANs) ou
-Neighborhood Area Networks (NANs) no contexto de medição avançada --- operam na
+Redes de campo sem fio --- denominadas \textit{Field Area Networks} (FANs) ou
+\textit{Neighborhood Area Networks} (NANs) no contexto de medição avançada --- operam na
 camada entre os dispositivos de campo (medidores, sensores, atuadores) e os
-concentradores de dados ou gateways que se conectam à rede de gestão. A
+concentradores de dados ou \textit{gateways} que se conectam à rede de gestão. A
 Figura~\ref{fig:fan} ilustra a hierarquia típica: dispositivos de campo formam
 uma malha sem fio multihop que converge em concentradores de dados, os quais se
-conectam ao sistema de back-office via WAN~\cite{ancillotti2013rpl}.
+conectam ao sistema de \textit{back-office} via WAN~\cite{ancillotti2013rpl}.
 
 \begin{figure}[t]
   \centering
@@ -193,10 +193,10 @@ concebido especificamente para redes com enlace sem fio de baixa confiabilidade
 e dispositivos com recursos restritos --- as mesmas condições encontradas em
 FANs de infraestrutura. Ao contrário de protocolos tradicionais (AODV, OSPF,
 DSR), o RPL considera métricas de qualidade de enlace e energia na construção
-de rotas, suporta topologias com milhares de nós e opera com overhead de
+de rotas, suporta topologias com milhares de nós e opera com \textit{overhead} de
 controle compatível com dispositivos embarcados~\cite{ancillotti2013rpl}.
 
-Este trabalho apresenta o RPL no contexto de backhaul FAN, organizado da
+Este trabalho apresenta o RPL no contexto de \textit{backhaul} FAN, organizado da
 seguinte forma: a Seção~\ref{sec:arch} descreve a arquitetura e o funcionamento
 do protocolo; a Seção~\ref{sec:resilience} analisa os mecanismos de resiliência;
 a Seção~\ref{sec:tools} discute ferramentas de simulação; a
@@ -246,8 +246,8 @@ ingresso na rede --- relevante em cenários de substituição de equipamento em 
 
 \subsection{Algoritmo Trickle}
 
-O RPL utiliza o algoritmo Trickle~\cite{rfc6206} para controlar a frequência de
-transmissão dos DIOs. O Trickle adapta o intervalo entre limites mínimo
+O RPL utiliza o algoritmo \textit{Trickle}~\cite{rfc6206} para controlar a frequência de
+transmissão dos DIOs. O \textit{Trickle} adapta o intervalo entre limites mínimo
 ($I_{min}$) e máximo ($I_{max}$): em topologias estáveis, o intervalo dobra a
 cada ciclo, reduzindo drasticamente o overhead de controle; quando inconsistências
 são detectadas, o intervalo reinicia a $I_{min}$ para convergência rápida. Em uma
@@ -314,7 +314,7 @@ interferência eletromagnética, obstrução física (vegetação, estruturas me
 e variações atmosféricas. O RPL detecta falhas em múltiplas camadas: na camada
 de enlace, o IEEE~802.15.4 sinaliza falha via ausência de ACK após o número
 máximo de retransmissões; na camada de rede, a ausência de DIOs do pai
-preferencial por múltiplos intervalos Trickle indica falha do nó pai.
+preferencial por múltiplos intervalos \textit{Trickle} indica falha do nó pai.
 
 Dispositivos monitoram continuamente o ETX dos enlaces com candidatos a pai.
 Degradação abrupta do ETX --- típica de equipamentos com interferência
@@ -345,7 +345,7 @@ descarta o pai atual imediatamente~\cite{winter2012rpl}.
 Quando o reparo local é insuficiente --- particionamento da rede ou degradação
 sistêmica após evento de grande escala --- o concentrador incrementa o
 \textit{DODAGVersionNumber}, forçando reconstrução completa do DODAG. O
-algoritmo Trickle reiniciado a $I_{min}$ propaga o novo DIO rapidamente pela
+algoritmo \textit{Trickle} reiniciado a $I_{min}$ propaga o novo DIO rapidamente pela
 malha. O custo de convergência é elevado, devendo ser reservado para falhas que
 o reparo local não pode corrigir.
 
@@ -409,7 +409,7 @@ outros equipamentos de campo.
 \subsection{Infraestrutura de Medição Avançada (AMI)}
 
 A AMI (\textit{Advanced Metering Infrastructure}) é a aplicação mais madura do
-RPL em backhaul de campo. Medidores inteligentes, instalados em transformadores
+RPL em \textit{backhaul} de campo. Medidores inteligentes, instalados em transformadores
 de distribuição e ramais residenciais/comerciais, formam a malha FAN que
 transporta leituras de consumo, alertas de qualidade de energia e comandos de
 corte/religamento ao sistema de gestão da concessionária. O RPL, operando sobre
@@ -419,7 +419,7 @@ multihop sem configuração manual por ponto~\cite{ancillotti2013rpl}.
 A escala típica de uma AMI metropolitana --- dezenas de milhares de medidores
 por concentrador --- exige as propriedades de escalabilidade e auto-organização
 do RPL. O \textit{rank-based} forwarding elimina a necessidade de tabelas de
-roteamento completas nos medidores, e o algoritmo Trickle garante que o overhead
+roteamento completas nos medidores, e o algoritmo \textit{Trickle} garante que o overhead
 de controle não degrada o canal à medida que a rede cresce.
 
 \subsection{Automação de Distribuição e FDIR}
@@ -447,7 +447,7 @@ RPL/FAN. A telemetria contínua permite ao operador identificar clientes com
 equipamentos geradores de harmônica, precificar energia reativa e antecipar
 falhas de transformador~\cite{ancillotti2013rpl}.
 
-O backhaul sem fio via RPL substitui com vantagem econômica os enlaces ponto-a-
+O \textit{backhaul} sem fio via RPL substitui com vantagem econômica os enlaces ponto-a-
 ponto dedicados (radio UHF, fibra) em subestações secundárias e pontos de
 monitoramento remotos, onde o volume de dados é baixo mas a disponibilidade
 do enlace é mandatória.
@@ -467,15 +467,15 @@ coleta periódica (medição) na mesma malha FAN é um desafio de engenharia ati
 \textbf{Interoperabilidade multi-vendor}: O perfil Wi-SUN~\cite{wisun2022}
 avança na padronização, mas implantações mistas com equipamentos de diferentes
 fabricantes ainda exigem validação extensiva de compatibilidade, especialmente
-nos mecanismos de segurança e nos parâmetros Trickle.
+nos mecanismos de segurança e nos parâmetros \textit{Trickle}.
 
 % ─── VI. CONCLUSÃO ───────────────────────────────────────────────────────────
 \section{Conclusão}
 \label{sec:conclusion}
 
-O RPL consolida-se como o protocolo de roteamento padrão para backhaul sem fio
-em Field Area Networks de infraestruturas críticas. Sua arquitetura DODAG, aliada
-ao algoritmo Trickle e às funções objetivo configuráveis, resolve os desafios de
+O RPL consolida-se como o protocolo de roteamento padrão para \textit{backhaul} sem fio
+em \textit{Field Area Networks} de infraestruturas críticas. Sua arquitetura DODAG, aliada
+ao algoritmo \textit{Trickle} e às funções objetivo configuráveis, resolve os desafios de
 roteamento em malhas de campo de forma energicamente eficiente e sem configuração
 manual --- propriedades inatingíveis por protocolos projetados para redes
 convencionais.
@@ -494,7 +494,7 @@ distribuição, escalabilidade de reparo em eventos de grande escala e integraç
 com protocolos OT legados --- representam linhas abertas de pesquisa com alto
 potencial de impacto em infraestruturas de distribuição de próxima geração.
 
-Como continuidade desta revisão, trabalhos futuros no laboratório de backhaul sem
+Como continuidade desta revisão, trabalhos futuros no laboratório de \textit{backhaul} sem
 fio do projeto CISEI-COPEL preveem a avaliação experimental do RPL via simulação
 em Contiki-NG/Cooja, em cenários representativos de redes FAN para automação de
 distribuição elétrica, com foco em métricas de convergência, resiliência a falhas

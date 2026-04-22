@@ -23,7 +23,7 @@ O objetivo é manter uma base aberta, didática e academicamente rastreável, co
 | 02  | [Problema Produtor-Consumidor](atividades/produto-consumidor/README.md)                                       | Concorrência, sincronização e fila bloqueante    | Java 21, `ArrayBlockingQueue`                           | Entregue 15/04 |
 | 03  | [Leitura Arquivo Multithread](atividades/contador-caracteres/README.md)                                       | Paralelismo de dados e processamento de arquivos | Java 21, `ExecutorService`, `AtomicInteger`             | Entregue 15/04 |
 | 04  | [RTOS: Determinismo e Inversão de Prioridade](atividades/rtos-determinismo/README.md)                         | Escalonamento, jitter, prioridade e RTOS         | C, pthreads, `SCHED_FIFO`, Zephyr, QEMU                 | Entregue 15/04 |
-| 05  | [Estudo sobre Protocolo de Roteamento RPL](atividades/protocolo-rpl/README.md)                                | LLN, IoT, RPL, resiliência e roteamento          | Revisão bibliográfica, LaTeX, Overleaf, IEEE Conference | Em andamento   |
+| 05  | [Estudo sobre Protocolo de Roteamento RPL](atividades/protocolo-rpl/README.md)                                | LLN, IoT, RPL, resiliência e roteamento          | Revisão bibliográfica, LaTeX, Overleaf, IEEE Conference | Entregue 22/04 |
 
 ---
 

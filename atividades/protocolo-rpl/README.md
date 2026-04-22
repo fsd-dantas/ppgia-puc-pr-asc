@@ -12,6 +12,8 @@ Realizar uma pesquisa bibliográfica e elaborar um artigo científico sobre o pr
 | Tema | Protocolo de roteamento RPL |
 | Formato | Artigo em LaTeX, usando template IEEE Conference no Overleaf |
 | Entrega | Compartilhamento do projeto no Overleaf com o docente, conforme enunciado da disciplina |
+| Data de entrega | 2026-04-22 |
+| Autor | Fernando Sabino Dantas |
 | Apoio local | Este diretório registra estrutura, roteiro e versão de acompanhamento do texto |
 
 ## Estrutura mínima do artigo
