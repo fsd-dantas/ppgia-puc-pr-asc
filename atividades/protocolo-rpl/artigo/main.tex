@@ -21,9 +21,7 @@
 \begin{document}
 
 \title{RPL como Protocolo de Roteamento para Backhaul Sem Fio em
-Field Area Networks de Infraestruturas Críticas%
-\thanks{Artefatos disponíveis em:
-\url{https://github.com/fsd-dantas/ppgia-puc-pr-asc}}}
+Field Area Networks de Infraestruturas Críticas}
 
 \author{
   \IEEEauthorblockN{Fernando Sabino Dantas}
@@ -115,32 +113,33 @@ conectam ao sistema de back-office via WAN~\cite{ancillotti2013rpl}.
 
 \begin{figure}[t]
   \centering
+  \resizebox{\columnwidth}{!}{%
   \begin{tikzpicture}[
     dev/.style   = {circle, draw=black!55, fill=gray!25,
-                    minimum size=7pt, inner sep=0},
-    infra/.style = {rectangle, rounded corners=2pt,
+                    minimum size=9pt, inner sep=0},
+    infra/.style = {rectangle, rounded corners=3pt,
                     draw=black!75, fill=white,
-                    minimum width=1.5cm, minimum height=0.7cm,
-                    font=\scriptsize\bfseries, align=center},
+                    minimum width=2.2cm, minimum height=1.0cm,
+                    font=\normalsize\bfseries, align=center},
     rpl/.style   = {-Latex, black!40, thin,
-                    shorten <=1.5pt, shorten >=1.5pt},
+                    shorten <=2pt, shorten >=2pt},
     wan/.style   = {-Latex, black!80, thick, dashed,
-                    shorten <=3pt, shorten >=3pt},
-    >=Latex, scale=0.92
+                    shorten <=5pt, shorten >=5pt},
+    >=Latex
   ]
-    %% ── field devices (DODAG leaves / intermediate nodes) ──
+    %% ── field devices ───────────────────────────────────────
     \node[dev] (d1) at (0.0,  0.0) {};
-    \node[dev] (d2) at (0.0,  1.0) {};
-    \node[dev] (d3) at (0.8,  1.6) {};
-    \node[dev] (d4) at (0.8,  0.5) {};
-    \node[dev] (d5) at (0.4, -0.5) {};
-    \node[dev] (d6) at (1.6,  1.0) {};
+    \node[dev] (d2) at (0.0,  1.2) {};
+    \node[dev] (d3) at (1.0,  1.9) {};
+    \node[dev] (d4) at (1.0,  0.6) {};
+    \node[dev] (d5) at (0.5, -0.7) {};
+    \node[dev] (d6) at (2.0,  1.2) {};
 
     %% ── infrastructure ──────────────────────────────────────
-    \node[infra] (dap) at (3.1, 0.5) {Concentrador\\(DAP)};
-    \node[infra] (he)  at (5.6, 0.5) {Head-end\\SCADA};
+    \node[infra] (dap) at (4.0, 0.6) {Concentrador\\(DAP)};
+    \node[infra] (he)  at (7.4, 0.6) {Head-end\\SCADA};
 
-    %% ── RPL upward routes (toward DODAG root = DAP) ─────────
+    %% ── RPL upward routes ───────────────────────────────────
     \draw[rpl] (d1) -- (d4);
     \draw[rpl] (d2) -- (d4);
     \draw[rpl] (d5) -- (d4);
@@ -150,27 +149,27 @@ conectam ao sistema de back-office via WAN~\cite{ancillotti2013rpl}.
 
     %% ── WAN backhaul ────────────────────────────────────────
     \draw[wan] (dap) --
-      node[above, font=\tiny] {LTE Band~31}
-      node[below, font=\tiny] {450\,MHz / WAN}
+      node[above, font=\normalsize] {LTE Band~31 (450\,MHz)}
       (he);
 
     %% ── FAN zone background ─────────────────────────────────
     \begin{scope}[on background layer]
-      \fill[gray!10, rounded corners=5pt]
-        (-0.45,-0.85) rectangle (2.35, 2.1);
+      \fill[gray!10, rounded corners=7pt]
+        (-0.6,-1.1) rectangle (3.0, 2.6);
     \end{scope}
 
     %% ── zone labels ─────────────────────────────────────────
-    \node[font=\tiny, text=black!55, align=center]
-      at (0.95, -1.2) {FAN --- RPL\,/\,IEEE~802.15.4g\,/\,Wi-SUN};
-    \node[font=\tiny, text=black!55]
-      at (4.35, -1.2) {WAN};
+    \node[font=\normalsize, text=black!55, align=center]
+      at (1.2, -1.7) {FAN --- RPL / IEEE~802.15.4g / Wi-SUN};
+    \node[font=\normalsize, text=black!55]
+      at (5.7, -1.7) {WAN};
 
     %% ── device legend ───────────────────────────────────────
-    \node[dev, scale=0.7] at (0.0, 2.55) {};
-    \node[font=\tiny, text=black!60, right]
-      at (0.15, 2.55) {Medidor\,/\,Sensor\,/\,Atuador};
-  \end{tikzpicture}
+    \node[dev, scale=0.85] at (-0.55, 3.1) {};
+    \node[font=\normalsize, text=black!60, right]
+      at (-0.3, 3.1) {Medidor / Sensor / Atuador};
+  \end{tikzpicture}%
+  }
   \caption{Arquitetura de comunicação em redes de distribuição.
            O RPL atua na camada FAN, provendo roteamento multihop
            entre dispositivos de campo e concentradores.}
