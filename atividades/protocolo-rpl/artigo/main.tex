@@ -4,6 +4,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[brazil]{babel}
+\addto\captionsbrazil{\renewcommand{\abstractname}{Abstract}}
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{graphicx}
@@ -21,7 +22,9 @@
 \begin{document}
 
 \title{RPL como Protocolo de Roteamento para Backhaul Sem Fio em
-Field Area Networks de Infraestruturas Críticas}
+Field Area Networks de Infraestruturas Críticas%
+\thanks{Artefatos disponíveis em:
+\url{https://github.com/fsd-dantas/ppgia-puc-pr-asc}}}
 
 \author{
   \IEEEauthorblockN{Fernando Sabino Dantas}
@@ -113,31 +116,30 @@ conectam ao sistema de back-office via WAN~\cite{ancillotti2013rpl}.
 
 \begin{figure}[t]
   \centering
-  \resizebox{\columnwidth}{!}{%
   \begin{tikzpicture}[
     dev/.style   = {circle, draw=black!55, fill=gray!25,
-                    minimum size=9pt, inner sep=0},
-    infra/.style = {rectangle, rounded corners=3pt,
+                    minimum size=5pt, inner sep=0},
+    infra/.style = {rectangle, rounded corners=2pt,
                     draw=black!75, fill=white,
-                    minimum width=2.2cm, minimum height=1.0cm,
-                    font=\normalsize\bfseries, align=center},
+                    minimum width=1.4cm, minimum height=0.55cm,
+                    font=\scriptsize\bfseries, align=center},
     rpl/.style   = {-Latex, black!40, thin,
-                    shorten <=2pt, shorten >=2pt},
+                    shorten <=1.5pt, shorten >=1.5pt},
     wan/.style   = {-Latex, black!80, thick, dashed,
-                    shorten <=5pt, shorten >=5pt},
+                    shorten <=3pt, shorten >=3pt},
     >=Latex
   ]
     %% ── field devices ───────────────────────────────────────
     \node[dev] (d1) at (0.0,  0.0) {};
-    \node[dev] (d2) at (0.0,  1.2) {};
-    \node[dev] (d3) at (1.0,  1.9) {};
-    \node[dev] (d4) at (1.0,  0.6) {};
-    \node[dev] (d5) at (0.5, -0.7) {};
-    \node[dev] (d6) at (2.0,  1.2) {};
+    \node[dev] (d2) at (0.0,  0.8) {};
+    \node[dev] (d3) at (0.6,  1.3) {};
+    \node[dev] (d4) at (0.6,  0.4) {};
+    \node[dev] (d5) at (0.3, -0.5) {};
+    \node[dev] (d6) at (1.3,  0.8) {};
 
     %% ── infrastructure ──────────────────────────────────────
-    \node[infra] (dap) at (4.0, 0.6) {Concentrador\\(DAP)};
-    \node[infra] (he)  at (7.4, 0.6) {Head-end\\SCADA};
+    \node[infra] (dap) at (2.6, 0.4) {Concentrador\\(DAP)};
+    \node[infra] (he)  at (4.6, 0.4) {Head-end\\SCADA};
 
     %% ── RPL upward routes ───────────────────────────────────
     \draw[rpl] (d1) -- (d4);
@@ -147,29 +149,28 @@ conectam ao sistema de back-office via WAN~\cite{ancillotti2013rpl}.
     \draw[rpl] (d6) -- (dap);
     \draw[rpl] (d4) -- (dap);
 
-    %% ── WAN backhaul ────────────────────────────────────────
-    \draw[wan] (dap) --
-      node[above, font=\normalsize] {LTE Band~31 (450\,MHz)}
-      (he);
+    %% ── WAN arrow (label as separate node above) ────────────
+    \draw[wan] (dap.east) -- (he.west);
+    \node[font=\tiny, align=center, text=black!65]
+      at (3.6, 1.0) {LTE Band~31\\(450\,MHz)};
 
     %% ── FAN zone background ─────────────────────────────────
     \begin{scope}[on background layer]
-      \fill[gray!10, rounded corners=7pt]
-        (-0.6,-1.1) rectangle (3.0, 2.6);
+      \fill[gray!10, rounded corners=4pt]
+        (-0.4,-0.85) rectangle (2.05, 1.7);
     \end{scope}
 
     %% ── zone labels ─────────────────────────────────────────
-    \node[font=\normalsize, text=black!55, align=center]
-      at (1.2, -1.7) {FAN --- RPL / IEEE~802.15.4g / Wi-SUN};
-    \node[font=\normalsize, text=black!55]
-      at (5.7, -1.7) {WAN};
+    \node[font=\tiny, align=center, text=black!55]
+      at (0.8, -1.2) {FAN --- RPL / IEEE~802.15.4g / Wi-SUN};
+    \node[font=\tiny, text=black!55]
+      at (3.6, -1.2) {WAN};
 
     %% ── device legend ───────────────────────────────────────
-    \node[dev, scale=0.85] at (-0.55, 3.1) {};
-    \node[font=\normalsize, text=black!60, right]
-      at (-0.3, 3.1) {Medidor / Sensor / Atuador};
-  \end{tikzpicture}%
-  }
+    \node[dev, scale=0.65] at (-0.4, 2.0) {};
+    \node[font=\tiny, text=black!60, right]
+      at (-0.2, 2.0) {Medidor / Sensor / Atuador};
+  \end{tikzpicture}
   \caption{Arquitetura de comunicação em redes de distribuição.
            O RPL atua na camada FAN, provendo roteamento multihop
            entre dispositivos de campo e concentradores.}
